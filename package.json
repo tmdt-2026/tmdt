@@ -1,0 +1,11 @@
+{
+  "name": "front-end-iluxury",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "mock:api": "json-server --watch mock-api/db.json --port 3000"
+  },
+  "devDependencies": {
+    "json-server": "^1.0.0-beta.3"
+  }
+}

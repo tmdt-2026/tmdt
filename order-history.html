@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lịch Sử Đơn Hàng - iLuxury</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+      (function () {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("standalone")) {
+          return;
+        }
+        let auth = null;
+        try {
+          const raw = localStorage.getItem("iluxury_auth");
+          auth = raw ? JSON.parse(raw) : null;
+        } catch (error) {
+          auth = null;
+        }
+        const target = new URL("./index.html", window.location.href);
+        target.searchParams.set(
+          "page",
+          auth?.isAuthenticated ? "order-history" : "login",
+        );
+        if (window.location.pathname !== target.pathname) {
+          window.location.replace(
+            `${target.pathname}${target.search}${window.location.hash}`,
+          );
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <header class="checkout-header">
+      <div class="container">
+        <div class="checkout-header-content">
+          <a href="./index.html" class="checkout-logo" data-home-return>
+            <i data-lucide="sparkles"></i>
+            <span>iLuxury</span>
+          </a>
+          <div class="checkout-secure">
+            <i data-lucide="package-search"></i>
+            <span>Lịch sử đơn hàng</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="order-page">
+      <div class="container container-narrow">
+        <section class="order-page-head">
+          <h1>Lịch sử đặt hàng</h1>
+          <p>Quản lý tất cả đơn hàng đã đặt tại iLuxury.</p>
+        </section>
+
+        <section class="order-filter-bar" id="order-filter-bar">
+          <button
+            type="button"
+            class="order-filter-btn active"
+            data-status="all"
+          >
+            Tất cả
+          </button>
+          <button type="button" class="order-filter-btn" data-status="pending">
+            Chờ xử lý
+          </button>
+          <button
+            type="button"
+            class="order-filter-btn"
+            data-status="processing"
+          >
+            Đang xử lý
+          </button>
+          <button type="button" class="order-filter-btn" data-status="shipped">
+            Đang giao
+          </button>
+          <button
+            type="button"
+            class="order-filter-btn"
+            data-status="completed"
+          >
+            Hoàn thành
+          </button>
+          <button
+            type="button"
+            class="order-filter-btn"
+            data-status="cancelled"
+          >
+            Đã hủy
+          </button>
+        </section>
+
+        <section
+          class="order-list"
+          id="order-list"
+          aria-live="polite"
+        ></section>
+      </div>
+    </main>
+
+    <script type="module" src="./js/pages/home-return.js"></script>
+    <script type="module" src="./js/pages/order-history.js"></script>
+  </body>
+</html>

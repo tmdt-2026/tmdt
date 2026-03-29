@@ -1,0 +1,309 @@
+export const siteData = {
+    header: {
+        logoText: 'i<span>Luxury</span>',
+        navLinks: [
+            { label: 'Mac', href: '#' },
+            { label: 'iPhone', href: '#' },
+            { label: 'iPad', href: '#' },
+            { label: 'Watch', href: '#' },
+            { label: 'Âm thanh', href: '#' },
+            { label: 'Phụ kiện', href: '#' }
+        ],
+        actions: [
+            { icon: 'search', href: '#', ariaLabel: 'Tìm kiếm' },
+            { icon: 'user', href: '#', ariaLabel: 'Tài khoản' },
+            { icon: 'shopping-bag', href: '#', ariaLabel: 'Giỏ hàng' }
+        ]
+    },
+    categoryNav: [
+        { icon: 'laptop', label: 'Mac' },
+        { icon: 'smartphone', label: 'iPhone' },
+        { icon: 'tablet', label: 'iPad' },
+        { icon: 'watch', label: 'Watch' },
+        { icon: 'headphones', label: 'Âm thanh' },
+        { icon: 'mouse', label: 'Phụ kiện' }
+    ],
+    featuredSection: {
+        title: 'Sản Phẩm Bán Chạy',
+        titleStyle: 'color: var(--luxury-gold);',
+        products: [
+            {
+                badge: 'TOP 1',
+                badgeStyle: 'background-color: var(--luxury-gold); color: var(--deep-black);',
+                image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&q=80&w=400',
+                title: 'iPhone 15 Pro Max 256GB',
+                price: '34.990.000₫'
+            },
+            {
+                badge: 'TOP 2',
+                badgeStyle: 'background-color: var(--luxury-gold); color: var(--deep-black);',
+                image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=400',
+                title: 'MacBook Pro 14-inch M3 Pro',
+                price: '49.990.000₫'
+            },
+            {
+                badge: 'TOP 3',
+                badgeStyle: 'background-color: var(--luxury-gold); color: var(--deep-black);',
+                image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&q=80&w=400',
+                title: 'iPad Pro 13-inch M4',
+                price: '37.990.000₫'
+            },
+            {
+                badge: 'TOP 4',
+                badgeStyle: 'background-color: var(--luxury-gold); color: var(--deep-black);',
+                image: 'https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?auto=format&fit=crop&q=80&w=400',
+                title: 'Apple Watch Series 9 41mm',
+                price: '10.490.000₫'
+            },
+            {
+                badge: 'TOP 5',
+                badgeStyle: 'background-color: var(--luxury-gold); color: var(--deep-black);',
+                image: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&q=80&w=400',
+                title: 'AirPods Pro (Gen 2) USB-C',
+                price: '6.190.000₫'
+            },
+            {
+                badge: 'TOP 6',
+                badgeStyle: 'background-color: var(--luxury-gold); color: var(--deep-black);',
+                image: 'https://images.unsplash.com/photo-1517059224940-d4af9eec41b7?auto=format&fit=crop&q=80&w=400',
+                title: 'iMac 24-inch M3',
+                price: '36.990.000₫'
+            }
+        ]
+    },
+    productSections: [
+        {
+            title: 'Mac',
+            viewAllLabel: 'Xem tất cả Mac',
+            viewMoreLabel: 'Khám phá toàn bộ dòng Mac',
+            products: [
+                {
+                    badge: 'MỚI',
+                    image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=400',
+                    title: 'MacBook Air 13-inch M3',
+                    price: '27.990.000₫'
+                },
+                {
+                    image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=400',
+                    title: 'MacBook Pro 14-inch M3',
+                    price: '39.990.000₫'
+                },
+                {
+                    badge: '-15%',
+                    image: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&q=80&w=400',
+                    title: 'MacBook Air 13-inch M1',
+                    price: '18.990.000₫',
+                    originalPrice: '22.490.000₫'
+                },
+                {
+                    image: 'https://images.unsplash.com/photo-1517059224940-d4af9eec41b7?auto=format&fit=crop&q=80&w=400',
+                    title: 'iMac 24-inch M3',
+                    price: '36.990.000₫'
+                },
+                {
+                    badge: 'MỚI',
+                    image: 'https://images.unsplash.com/photo-1523206489230-c012c64b2b48?auto=format&fit=crop&q=80&w=400',
+                    title: 'Mac mini M2 256GB',
+                    price: '14.990.000₫'
+                },
+                {
+                    badge: '-8%',
+                    image: 'https://images.unsplash.com/photo-1517059224940-d4af9eec41b7?auto=format&fit=crop&q=80&w=400',
+                    imageStyle: 'filter: hue-rotate(20deg);',
+                    title: 'Studio Display 27-inch',
+                    price: '36.790.000₫',
+                    originalPrice: '39.990.000₫'
+                }
+            ]
+        },
+        {
+            title: 'iPhone',
+            viewAllLabel: 'Xem tất cả iPhone',
+            viewMoreLabel: 'Khám phá toàn bộ dòng iPhone',
+            products: [
+                {
+                    badge: 'HOT',
+                    image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&q=80&w=400',
+                    title: 'iPhone 15 Pro Max 256GB',
+                    price: '34.990.000₫'
+                },
+                {
+                    image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&q=80&w=400',
+                    imageStyle: 'filter: hue-rotate(180deg);',
+                    title: 'iPhone 15 Pro 128GB',
+                    price: '28.990.000₫'
+                },
+                {
+                    image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&q=80&w=400',
+                    imageStyle: 'filter: hue-rotate(240deg);',
+                    title: 'iPhone 15 128GB',
+                    price: '22.990.000₫'
+                },
+                {
+                    badge: '-12%',
+                    image: 'https://images.unsplash.com/photo-1616348436168-de43ad0db179?auto=format&fit=crop&q=80&w=400',
+                    title: 'iPhone 13 128GB',
+                    price: '13.990.000₫',
+                    originalPrice: '15.990.000₫'
+                },
+                {
+                    badge: 'MỚI',
+                    image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&q=80&w=400',
+                    imageStyle: 'filter: hue-rotate(300deg);',
+                    title: 'iPhone 15 Plus 128GB',
+                    price: '25.990.000₫'
+                },
+                {
+                    image: 'https://images.unsplash.com/photo-1616348436168-de43ad0db179?auto=format&fit=crop&q=80&w=400',
+                    title: 'iPhone 14 128GB',
+                    price: '17.490.000₫'
+                }
+            ]
+        },
+        {
+            title: 'iPad',
+            viewAllLabel: 'Xem tất cả iPad',
+            viewMoreLabel: 'Khám phá toàn bộ dòng iPad',
+            products: [
+                {
+                    badge: 'MỚI',
+                    image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&q=80&w=400',
+                    title: 'iPad Pro 13-inch M4',
+                    price: '37.990.000₫'
+                },
+                {
+                    image: 'https://images.unsplash.com/photo-1588702545922-e6ca28c897f7?auto=format&fit=crop&q=80&w=400',
+                    title: 'iPad Air 11-inch M2',
+                    price: '16.990.000₫'
+                },
+                {
+                    badge: '-10%',
+                    image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&q=80&w=400',
+                    imageStyle: 'filter: hue-rotate(45deg);',
+                    title: 'iPad Gen 10 64GB',
+                    price: '9.890.000₫',
+                    originalPrice: '10.990.000₫'
+                },
+                {
+                    image: '',
+                    title: 'iPad mini 6 64GB (Đang Cập Nhật Ảnh)',
+                    price: '11.990.000₫'
+                },
+                {
+                    badge: 'HOT',
+                    image: 'https://images.unsplash.com/photo-1588702545922-e6ca28c897f7?auto=format&fit=crop&q=80&w=400',
+                    imageStyle: 'filter: hue-rotate(220deg);',
+                    title: 'iPad Air 13-inch M2',
+                    price: '22.990.000₫'
+                },
+                {
+                    image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&q=80&w=400',
+                    imageStyle: 'filter: hue-rotate(320deg);',
+                    title: 'Apple Pencil Pro',
+                    price: '3.490.000₫'
+                }
+            ]
+        },
+        {
+            title: 'Apple Watch',
+            viewAllLabel: 'Xem tất cả Watch',
+            viewMoreLabel: 'Khám phá toàn bộ Watch',
+            products: [
+                {
+                    badge: 'HOT',
+                    image: 'https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?auto=format&fit=crop&q=80&w=400',
+                    title: 'Apple Watch Series 9 41mm',
+                    price: '10.490.000₫'
+                },
+                {
+                    image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&q=80&w=400',
+                    title: 'Apple Watch Ultra 2',
+                    price: '21.990.000₫'
+                },
+                {
+                    badge: '-15%',
+                    image: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&q=80&w=400',
+                    title: 'Apple Watch SE 2023 40mm',
+                    price: '5.990.000₫',
+                    originalPrice: '6.990.000₫'
+                },
+                {
+                    image: 'https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?auto=format&fit=crop&q=80&w=400',
+                    imageStyle: 'filter: hue-rotate(120deg);',
+                    title: 'Dây đeo Milanese Loop',
+                    price: '2.490.000₫'
+                },
+                {
+                    badge: 'MỚI',
+                    image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&q=80&w=400',
+                    imageStyle: 'filter: hue-rotate(40deg);',
+                    title: 'Apple Watch Series 9 45mm',
+                    price: '11.990.000₫'
+                },
+                {
+                    image: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&q=80&w=400',
+                    imageStyle: 'filter: hue-rotate(200deg);',
+                    title: 'Dây đeo Sport Band',
+                    price: '1.290.000₫'
+                }
+            ]
+        },
+        {
+            title: 'Phụ Kiện Chính Hãng',
+            viewAllLabel: 'Xem tất cả Phụ kiện',
+            viewMoreLabel: 'Khám phá toàn bộ Phụ kiện',
+            isLastSection: true,
+            products: [
+                {
+                    image: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&q=80&w=400',
+                    title: 'AirPods Pro (Gen 2) USB-C',
+                    price: '6.190.000₫'
+                },
+                {
+                    badge: 'HOT',
+                    image: 'https://images.unsplash.com/photo-1588156979402-1df1b0bc446a?auto=format&fit=crop&q=80&w=400',
+                    title: 'AirPods 3 Lightning',
+                    price: '4.290.000₫'
+                },
+                {
+                    image: 'https://images.unsplash.com/photo-1628286595514-468e2f89f2a4?auto=format&fit=crop&q=80&w=400',
+                    title: 'Sạc MagSafe 15W',
+                    price: '1.190.000₫'
+                },
+                {
+                    image: 'https://images.unsplash.com/photo-1584852028661-bc8ff4cb8c15?auto=format&fit=crop&q=80&w=400',
+                    title: 'Apple AirTag (1 Pack)',
+                    price: '790.000₫'
+                },
+                {
+                    badge: '-10%',
+                    image: 'https://images.unsplash.com/photo-1628286595514-468e2f89f2a4?auto=format&fit=crop&q=80&w=400',
+                    title: 'Củ sạc USB-C 20W',
+                    price: '590.000₫',
+                    originalPrice: '650.000₫'
+                },
+                {
+                    image: 'https://images.unsplash.com/photo-1606229365485-93a3b8ee0385?auto=format&fit=crop&q=80&w=400',
+                    title: 'Magic Mouse USB-C',
+                    price: '2.190.000₫'
+                }
+            ]
+        }
+    ],
+    footer: {
+        productLinks: [
+            { label: 'MacBook & iMac', href: '#' },
+            { label: 'iPhone Mới Nhất', href: '#' },
+            { label: 'iPad Pro & Air', href: '#' },
+            { label: 'Apple Watch', href: '#' },
+            { label: 'Âm thanh & Phụ kiện', href: '#' }
+        ],
+        supportLinks: [
+            { label: 'Chính sách bảo hành', href: '#' },
+            { label: 'Chính sách đổi trả', href: '#' },
+            { label: 'Hướng dẫn trả góp', href: '#' },
+            { label: 'Tra cứu đơn hàng', href: '#' },
+            { label: 'Liên hệ & Góp ý', href: '#' }
+        ]
+    }
+};
