@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giao diện Thanh toán</title>
+    <link rel="stylesheet" href="dathang.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">logo</div>
+        <nav class="menu">
+            <a href="#">iPhone</a>
+            <a href="#">Mac</a>
+            <a href="#">iPad</a>
+            <a href="#">Watch</a>
+            <a href="#">Tai nghe, Loa</a>
+            <a href="#">Phụ kiện</a>
+            <a href="#">Liên hệ</a>
+        </nav>
+        <div class="header-tools">
+            <div class="search-bar">
+                <i class="fa fa-search"></i>
+                <input type="text" class="search" placeholder="Tìm kiếm...">
+            </div>
+            <div class="cart-icon">
+                <i class="fa fa-shopping-cart"></i>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="product-item">
+                <div class="product-img">
+                    <img src="/tainghe.jpg" alt="EarPods">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">EarPods jack cắm USB-C</h3>
+                    <p class="product-color">Màu: Trắng</p>
+                </div>
+                <div class="product-price-qty">
+                    <span class="price">540.000₫</span>
+                    <div class="quantity-box">
+                        <button onclick="changeQty(-1)">-</button>
+                        <input type="text" id="quantity" value="1" readonly>
+                        <button onclick="changeQty(1)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="total-row">
+                <span>Tạm tính (1 sản phẩm):</span>
+                <span class="total-price">540.000₫</span>
+            </div>
+
+            <div class="section-title">Thông tin khách hàng</div>
+            <div class="gender-selection">
+                <label><input type="radio" name="gender" checked> Anh</label>
+                <label><input type="radio" name="gender"> Chị</label>
+            </div>
+            <div class="input-group row">
+                <input type="text" placeholder="Họ và Tên">
+                <input type="tel" placeholder="Số điện thoại" id="phone" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+            </div>
+
+            <div class="section-title">Chọn hình thức nhận hàng</div>
+            <div class="shipping-method">
+                <label><input type="radio" name="ship" checked> Giao tận nơi</label>
+                <label><input type="radio" name="ship"> Nhận tại cửa hàng</label>
+            </div>
+
+            <div class="address-section">
+                <div class="select-box">
+                    <select name="address" class="address">
+                        <option value="">Chọn Tỉnh/ Thành phố</option>
+                        <option value="Tp. Hồ Chí Minh">Tp. Hồ Chí Minh</option>
+                        <option value="An Giang">An Giang</option>
+                        <option value="Tp. Cần Thơ">Tp. Cần Thơ</option>
+                        <option value="Tiền Giang">Tiền Giang</option>
+                        <option value="Hà Nội">Hà Nội</option>
+                        <option value="Bến Tre">Bến Tre</option>
+                        <option value="Sóc Trăng">Sóc Trăng</option>
+                        <option value="Cà Mau">Cà Mau</option>
+                    </select>
+                </div>
+                <div class="select-box">
+                    <select name="district" class="district">
+                        <option value="Quận 1">Quận 1</option>
+                        <option value="Quận 3">Quận 3</option>
+                        <option value="Quận 7">Quận7</option>
+                        <option value="P. Tân Định">P. Tân Định </option>
+                        <option value="P. Bến Thành">P. Bến Thành</option>
+                        <option value="P. Thủ Đức">P. Thủ Đức</option>
+                        <option value="Huyện Hóc Môn">Huyện Hóc Môn</option>
+                        <option value="P. Mỹ Xuyên">P. Mỹ Xuyên</option>
+                        <option value="P. Châu Phú A">P. Châu Phú A</option>
+                        <option value="Huyện Tân Châu">Huyện Tân Châu</option>
+                        <option value="Quận Ninh Kiều">Quận Ninh Kiều</option>
+                        <option value="Quận Cái Răng">Quận Cái Răng</option>
+                        <option value="Huyện Phong Điền">Huyện Phong Điền</option>
+                        <option value="Tp. Mỹ Tho">Tp. Mỹ Tho</option>
+                        <option value="Huyện Gò Công">Huyện Gò Công</option>
+                        <option value="Huyện Cái Bè">Huyện Cái Bè</option>
+                        <option value="Quận Hoàn Kiếm">Quận Hoàn Kiếm</option>
+                        <option value="Quận Ba Đình">Quận Ba Đình</option>
+                        <option value="Huyện Đông Anh">Huyện Đông Anh</option>
+                        <option value="Tp. Bến Tre">Tp. Bến Tre</option>
+                        <option value="Huyện Châu Thành">Huyện Châu Thành</option>
+                        <option value="Huyện Chợ Lách">Huyện Chợ Lách</option>
+                        <option value="Tp. Sóc Trăng">Tp. Sóc Trăng</option>
+                        <option value="Huyện Mỹ Xuyên">Huyện Mỹ Xuyên</option>
+                        <option value="Xã Thạnh Guới">Xã Thạnh Guới</option>
+                        <option value="Tp. Cà Mau">Tp. Cà Mau</option>
+                        <option value="Huyện U Minh">Huyện U Minh</option>
+                        <option value="Huyện Trần Văn Thời">Huyện Trần Văn Thời</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <input type="text" placeholder="Số nhà, tên đường">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <input type="text" placeholder="Nhập ghi chú (nếu có)">
+            </div>
+
+            <div class="extra-options">
+                <label><input type="checkbox"> Gọi người khác nhận hàng</label>
+                <label><input type="checkbox"> Hướng dẫn sử dụng, giải đáp thắc mắc sản phẩm</label>
+                <label><input type="checkbox"> Xuất hóa đơn công ty</label>
+            </div>
+        </div>
+
+
+    <div class="reduce-price">   
+        <div class="promo-section">
+        <div class="promo-header" onclick="togglePromo()">
+            <div class="header-left">
+                <span class="icon-ticket">🎟️</span>
+                <span>Sử dụng mã giảm giá</span>
+            </div>
+        </div>
+        <div class="promo-input-group" id="promoInput">
+            <input type="text" placeholder="Nhập mã giảm giá/ Phiếu mua hàng">
+            <button class="btn-apply">Áp dụng</button>
+        </div>
+    </div>
+
+    <div class="summary-row total-row">
+        <span>Tổng tiền:</span>
+        <span class="price">540.000₫</span>
+    </div>
+
+    <div class="policy-row">
+        <input type="checkbox" id="policy" checked>
+        <label for="policy">
+            Tôi đồng ý với <a href="#">Chính sách xử lý dữ liệu cá nhân</a> của 
+        </label>
+    </div>
+    <button class="btn-order">Đặt hàng</button>
+    <p class="footer-note">Bạn có thể lựa chọn các hình thức thanh toán ở bước sau</p>
+    </div> 
+
+    </main>
+    
+    <script src="dathang.js"></script>
+</body>
+</html>

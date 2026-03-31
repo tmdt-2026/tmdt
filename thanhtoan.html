@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh Toán - Checkout Page</title>
+    <link rel="stylesheet" href="thanhtoan.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="logo">logo</div>
+        <nav class="menu">
+            <a href="#">iPhone</a>
+            <a href="#">Mac</a>
+            <a href="#">iPad</a>
+            <a href="#">Watch</a>
+            <a href="#">Tai nghe, Loa</a>
+            <a href="#">Phụ kiện</a>
+            <a href="#">Liên hệ</a>
+        </nav>
+        <div class="header-tools">
+            <div class="search-bar">
+                <i class="fa fa-search"></i>
+                <input type="text" class="search" placeholder="Tìm kiếm...">
+            </div>
+            <div class="cart-icon">
+                <i class="fa fa-shopping-cart"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="checkout-container">
+        <h1>Thanh Toán</h1>
+
+        <div class="checkout-content">
+            <div class="order-section">
+                <h2>Đơn Hàng Của Bạn</h2>
+
+                <div class="product-card">
+                    <img src="/ip15.png" alt="ip15">
+                    <div class="product-info">
+                        <p class="product-name">iPhone 15 128GB</p>
+                        <p class="product-price">18.900.000đ <span class="old-price">19.600.000đ </span></p>
+                    </div>
+                    <div class="product-qty">x1</div>
+                </div>
+
+                <div class="product-card">
+                    <img src="/ip15plus.jpg" alt="ip15plus">
+                    <div class="product-info">
+                        <p class="product-name">iPhone 15 Plus 128GB</p>
+                        <p class="product-price">21.990.000đ <span class="old-price">22.400.000đ </span></p>
+                    </div>
+                    <div class="product-qty">x1</div>
+                </div>
+
+                <div class="total-price">
+                    Tổng: <span id="total-amount">40.890.000</span>đ
+                </div>
+            </div>
+
+            <div class="customer-section">
+                <h4>Chọn phương thức thanh toán: </h4>
+                <select id="payment-select">
+                    <option value="Thanh toán khi nhận hàng (COD)">Thanh toán khi nhận hàng (COD)</option>
+                    <option value="Chuyển khoản ngân hàng">Chuyển khoản ngân hàng</option>
+                </select>
+
+                <button type="submit" class="btn-order">
+                    <i class="fa-solid fa-receipt"></i> Đặt Hàng
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="qrModal" class="modal-qr">
+        <div class="modal-qr-content">
+            <span class="close-qr">&times;</span>
+            <h3>Quét Mã QR Để Thanh Toán</h3>
+            <p>Số tiền: <strong id="qr-amount">0</strong> VND</p>
+            <img src="" id="qr-image" alt="Mã QR Thanh Toán">
+            <div class="qr-info">
+                <p>Ngân hàng: <strong>Vietcombank</strong></p>
+                <p>STK: <strong>123456789</strong></p>
+                <p>Chủ TK: <strong>NGUYEN VAN A</strong></p>
+                <p>Nội dung: <strong id="qr-desc"></strong></p>
+            </div>
+            <button onclick="closeQR()">Tôi đã chuyển khoản</button>
+        </div>
+    </div>
+
+    <script src="thanhtoan.js"></script>
+</body>
+
+</html>

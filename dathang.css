@@ -1,0 +1,386 @@
+* {
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    background-color: #82CFFF; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 5%;
+    height: 80px;
+    width: 100%;
+    top: 0;
+    left: 0;
+    position: fixed;
+}
+
+.logo {
+    background-color: #B2E2FF;
+    padding: 10px 25px;
+    border-radius: 5px;
+    color: #fff;
+    font-weight: bold;
+}
+
+.menu a {
+    text-decoration: none;
+    color: #000000;
+    font-weight: bold;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 10px;
+    margin-right: 50px;
+    text-transform: uppercase;
+}
+
+.header-tools {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.search-bar {
+    background: white;
+    border-radius: 20px;
+    padding: 5px 15px;
+    display: flex;
+    align-items: center;
+}
+
+.search-bar input {
+    border: none;
+    outline: none;
+    padding-left: 10px;
+    font-size: 13px;
+    width: 150px;
+}
+
+.search-bar .search {
+    border: none;
+}
+
+.cart-icon {
+    background: white;
+    padding: 8px;
+    border-radius: 5px;
+}
+
+body {
+    background-color: #f4f4f4;
+    padding: 20px;
+}
+
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 130px;
+}
+
+/* Sản phẩm */
+.product-item {
+    display: flex;
+    gap: 15px;
+    padding-bottom: 15px;
+}
+
+.product-img {
+    text-align: center;
+}
+
+.product-img img {
+    width: 80px;
+}
+
+.product-info {
+    flex: 1;
+}
+
+.product-name {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.promo-text {
+    font-size: 13px;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.product-color {
+    font-size: 13px;
+    color: #666;
+}
+
+.product-price-qty {
+    text-align: right;
+}
+
+.price {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.quantity-box {
+    display: flex;
+    gap: 10px;
+    width: 150px;
+    margin: 20px auto; 
+}
+
+.quantity-box button {
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    width: 45px; 
+    height: 45px; 
+    background: #fff;
+    border: 1px solid #ddd; 
+    border-radius: 5px; 
+    cursor: pointer;
+    font-size: 20px; 
+    color: #444; 
+    transition: 0.2s; 
+}
+
+.quantity-box button:hover {
+    background: #edadad;
+    border-color: #ccc;
+}
+
+.quantity-box input {
+    width: 25px; 
+    height: 45px; 
+    border: 1px solid #ddd;
+    border-radius: 12px; 
+    text-align: center;
+    font-size: 20px; 
+    color: #000;
+    outline: none; 
+    appearance: none; 
+}
+
+/* Thêm icon + và - nếu bạn muốn sử dụng font-awesome */
+.quantity-box button .fa-minus {
+    font-size: 16px;
+}
+
+.quantity-box button .fa-plus {
+    font-size: 16px;
+}
+
+/* Layout chung */
+.divider {
+    height: 1px;
+    background: #eee;
+    margin: 15px 0;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-weight: bold;
+    margin: 20px 0 10px;
+}
+
+.gender-selection, .shipping-method {
+    margin-bottom: 15px;
+}
+
+.gender-selection label, .shipping-method label {
+    margin-right: 20px;
+    font-size: 14px;
+}
+
+/* Input Fields */
+.input-group {
+    margin-bottom: 10px;
+}
+
+.input-group.row {
+    display: flex;
+    gap: 10px;
+}
+
+#phone {
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    padding-left: 15px;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+}
+
+.select-box {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    color: #333;
+    background-color: #f9f9f9;
+}
+
+.address {
+    width: 100%;
+    height: 30px;
+}
+
+.district {
+    width: 100%;
+    height: 30px;
+}
+
+.extra-options {
+    margin: 30px 0 5px 0;
+
+}
+
+.extra-options label {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #333;
+}
+
+input[type="radio"], input[type="checkbox"] {
+    accent-color: #333;
+}
+
+.reduce-price {
+    max-width: 500px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 50px;
+    padding-bottom: 30px;
+}
+
+.promo-section {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.promo-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 15px;
+    cursor: pointer;
+    font-weight: 500;
+    align-items: center;
+}
+
+.promo-input-group {
+    display: flex;
+    padding: 15px;
+    background-color: #f9f9f9;
+    gap: 0;
+}
+
+.promo-input-group input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    outline: none;
+}
+
+.btn-apply {
+    background-color: #a0a0a0; /* Màu xám khi chưa nhập */
+    color: white;
+    border: none;
+    padding: 0 20px;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-apply {
+    background-color: rgb(216, 68, 68);
+}
+
+/* Tổng tiền & Điểm */
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.total-row {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.price {
+    color: #d0021b;
+}
+
+.point-row {
+    color: #333;
+}
+
+/* Chính sách */
+.policy-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 20px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.policy-row a {
+    color: #0071e3;
+    text-decoration: none;
+}
+
+/* Nút đặt hàng */
+.btn-order {
+    width: 100%;
+    background-color: #0071e3;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 25px;
+    cursor: pointer;
+}
+
+.footer-note {
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+    margin-top: 15px;
+}
+
+.arrow-up {
+    transform: rotate(0deg);
+    transition: 0.3s;
+}

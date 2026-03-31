@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Giỏ hàng iLuxury - xem sản phẩm đã chọn và hoàn tất thông tin đặt hàng.">
+<title>Giỏ Hàng - iLuxury</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="./css/cart.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="cart-page">
+<div id="header-root"></div>
+
+<div class="content-page">
+  <div class="page-header">
+    <a class="back-link" href="index.html">← Trở về trang chủ</a>
+    <span class="page-title">Giỏ hàng của bạn</span>
+  </div>
+
+  <div class="cart-container">
+    <!-- Cart Item -->
+    <div class="cart-item">
+      <div class="cart-img">📱</div>
+      <div class="cart-info">
+        <div class="cart-name">iPhone 16 128G</div>
+        <div class="cart-meta">
+          <span class="badge">Khuyến mãi ▼</span>
+          <span class="badge-outline">Đen ▼</span>
+        </div>
+        <div class="cart-price-row">
+          <div class="qty-ctrl">
+            <button class="qty-btn" type="button" data-action="decrease">−</button>
+            <span class="qty-val">1</span>
+            <button class="qty-btn" type="button" data-action="increase">+</button>
+          </div>
+          <div class="price-col">
+            <div class="price-now">24.990.000 VNĐ</div>
+            <div class="price-old">25.990.000 VNĐ</div>
+          </div>
+        </div>
+        <button class="del-btn">✕ Xóa</button>
+      </div>
+    </div>
+
+    <!-- Subtotal -->
+    <div class="subtotal-row">
+      <span>Tạm tính (1 sản phẩm):</span>
+      <strong>24.990.000 VNĐ</strong>
+    </div>
+
+    <!-- Customer Info -->
+    <div class="section-card">
+      <div class="section-card-title">Thông tin khách hàng</div>
+      <div class="radio-group">
+        <label class="radio-label"><input type="radio" name="gender" checked> Anh</label>
+        <label class="radio-label"><input type="radio" name="gender"> Chị</label>
+      </div>
+      <div class="input-row">
+        <input class="fi" type="text" placeholder="Họ và tên">
+        <input class="fi" type="tel" placeholder="Số điện thoại">
+      </div>
+    </div>
+
+    <!-- Delivery -->
+    <div class="section-card">
+      <div class="section-card-title">Chọn hình thức nhận hàng</div>
+      <div class="radio-group">
+        <label class="radio-label"><input type="radio" name="delivery" checked> Giao tận nơi</label>
+        <label class="radio-label"><input type="radio" name="delivery"> Nhận tại cửa hàng</label>
+      </div>
+      <div class="input-row" style="margin-bottom:12px;">
+        <select class="fi">
+          <option>Thành phố Hồ Chí Minh</option>
+          <option>Hà Nội</option>
+          <option>Đà Nẵng</option>
+        </select>
+        <select class="fi">
+          <option>Chọn Phường/Xã</option>
+          <option>Phường Bến Nghé</option>
+          <option>Phường Bến Thành</option>
+        </select>
+      </div>
+      <div class="input-row single">
+        <input class="fi" type="text" placeholder="Số nhà, tên đường">
+      </div>
+      <div class="input-row single" style="margin-bottom:12px;">
+        <input class="fi" type="text" placeholder="Nhập ghi chú (nếu có)">
+      </div>
+      <div class="checkbox-list">
+        <label class="cb-label"><input type="checkbox"> Gọi người khác nhận hàng</label>
+        <label class="cb-label"><input type="checkbox"> Chuyển danh bạ, dữ liệu qua máy mới</label>
+        <label class="cb-label"><input type="checkbox"> Xuất hóa đơn công ty</label>
+      </div>
+    </div>
+
+    <!-- Discount & Total -->
+    <div class="section-card">
+      <div class="discount-wrap" style="margin-bottom:16px;">
+        <select class="fi discount-select">
+          <option>Sử dụng mã giảm giá</option>
+          <option>SUMMER10</option>
+          <option>NEWUSER20</option>
+        </select>
+      </div>
+      <div class="total-row">
+        <span>Tổng tiền:</span>
+        <span class="total-price">24.990.000 VNĐ</span>
+      </div>
+      <div class="agree-row">
+        <input type="checkbox" id="agree" checked>
+        <label for="agree">Tôi đồng ý với <a href="#">chính sách dữ liệu cá nhân</a></label>
+      </div>
+      <button class="btn-order">ĐẶT HÀNG</button>
+    </div>
+  </div>
+</div>
+
+<div id="footer-root"></div>
+<script type="module" src="./js/cart.js"></script>
+</body>
+</html>

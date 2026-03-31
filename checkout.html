@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thanh Toán - iLuxury | Apple Premium Reseller</title>
+    <meta
+      name="description"
+      content="Hoàn tất đơn hàng Apple chính hãng tại iLuxury. Nhiều phương thức thanh toán, trả góp 0%, giao hàng nhanh chóng."
+    />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+      (function () {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("standalone")) {
+          return;
+        }
+        let auth = null;
+        try {
+          const raw = localStorage.getItem("iluxury_auth");
+          auth = raw ? JSON.parse(raw) : null;
+        } catch (error) {
+          auth = null;
+        }
+        const target = new URL("./index.html", window.location.href);
+        target.searchParams.set(
+          "page",
+          auth?.isAuthenticated ? "checkout" : "login",
+        );
+        if (window.location.pathname !== target.pathname) {
+          window.location.replace(
+            `${target.pathname}${target.search}${window.location.hash}`,
+          );
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- Simple Header for Checkout -->
+    <header class="checkout-header">
+      <div class="container">
+        <div class="checkout-header-content">
+          <a href="./index.html" class="checkout-logo" data-home-return>
+            <i data-lucide="sparkles"></i>
+            <span>iLuxury</span>
+          </a>
+          <div class="checkout-secure">
+            <i data-lucide="shield-check"></i>
+            <span>Thanh toán an toàn</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="checkout-page">
+      <div class="container">
+        <!-- Progress Stepper -->
+        <div class="checkout-stepper">
+          <div class="stepper-item active" data-step="1">
+            <div class="stepper-circle">1</div>
+            <span class="stepper-label">Địa chỉ giao hàng</span>
+          </div>
+          <div class="stepper-line"></div>
+          <div class="stepper-item" data-step="2">
+            <div class="stepper-circle">2</div>
+            <span class="stepper-label">Thanh toán</span>
+          </div>
+          <div class="stepper-line"></div>
+          <div class="stepper-item" data-step="3">
+            <div class="stepper-circle">3</div>
+            <span class="stepper-label">Xác nhận</span>
+          </div>
+        </div>
+
+        <div class="checkout-content">
+          <!-- Left Column: Forms -->
+          <div class="checkout-main">
+            <!-- Step 1: Shipping Information -->
+            <div class="checkout-step" data-step="1">
+              <h2 class="step-title">Thông Tin Giao Hàng</h2>
+
+              <form id="shipping-form" class="checkout-form">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="fullName">Họ và tên *</label>
+                    <input
+                      type="text"
+                      id="fullName"
+                      name="fullName"
+                      placeholder="Nguyễn Văn A"
+                      required
+                    />
+                    <span class="form-error"></span>
+                  </div>
+                  <div class="form-group">
+                    <label for="phoneNumber">Số điện thoại *</label>
+                    <input
+                      type="tel"
+                      id="phoneNumber"
+                      name="phoneNumber"
+                      placeholder="0912345678"
+                      required
+                    />
+                    <span class="form-error"></span>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="province">Tỉnh/Thành phố *</label>
+                    <select id="province" name="province" required>
+                      <option value="">Chọn Tỉnh/Thành phố</option>
+                      <option value="hanoi">Hà Nội</option>
+                      <option value="hcm">TP. Hồ Chí Minh</option>
+                      <option value="danang">Đà Nẵng</option>
+                      <option value="haiphong">Hải Phòng</option>
+                      <option value="cantho">Cần Thơ</option>
+                    </select>
+                    <span class="form-error"></span>
+                  </div>
+                  <div class="form-group">
+                    <label for="district">Quận/Huyện *</label>
+                    <select id="district" name="district" required disabled>
+                      <option value="">Chọn Quận/Huyện</option>
+                    </select>
+                    <span class="form-error"></span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="ward">Phường/Xã *</label>
+                  <select id="ward" name="ward" required disabled>
+                    <option value="">Chọn Phường/Xã</option>
+                  </select>
+                  <span class="form-error"></span>
+                </div>
+
+                <div class="form-group">
+                  <label for="street">Số nhà, tên đường *</label>
+                  <input
+                    type="text"
+                    id="street"
+                    name="street"
+                    placeholder="123 Nguyễn Huệ"
+                    required
+                  />
+                  <span class="form-error"></span>
+                </div>
+
+                <div class="form-group">
+                  <label for="note">Ghi chú (tùy chọn)</label>
+                  <textarea
+                    id="note"
+                    name="note"
+                    rows="3"
+                    placeholder="Ghi chú cho người giao hàng..."
+                  ></textarea>
+                </div>
+
+                <!-- Saved Addresses -->
+                <div class="saved-addresses" id="saved-addresses">
+                  <h3>Địa chỉ đã lưu</h3>
+                  <div class="address-list">
+                    <!-- Will be populated by JS -->
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  class="btn btn-primary btn-large"
+                  id="btn-continue-payment"
+                >
+                  Tiếp tục
+                  <i data-lucide="arrow-right"></i>
+                </button>
+              </form>
+            </div>
+
+            <!-- Step 2: Payment Method -->
+            <div class="checkout-step" data-step="2" style="display: none">
+              <h2 class="step-title">Phương Thức Thanh Toán</h2>
+
+              <div class="payment-methods">
+                <label class="payment-method">
+                  <input type="radio" name="payment" value="cod" checked />
+                  <div class="payment-content">
+                    <div class="payment-icon">💵</div>
+                    <div class="payment-info">
+                      <div class="payment-name">
+                        COD - Thanh toán khi nhận hàng
+                      </div>
+                      <div class="payment-desc">
+                        Thanh toán bằng tiền mặt khi nhận hàng
+                      </div>
+                    </div>
+                    <div class="payment-check">
+                      <i data-lucide="circle"></i>
+                    </div>
+                  </div>
+                </label>
+
+                <label class="payment-method">
+                  <input type="radio" name="payment" value="vnpay" />
+                  <div class="payment-content">
+                    <div class="payment-icon">🏦</div>
+                    <div class="payment-info">
+                      <div class="payment-name">VNPay</div>
+                      <div class="payment-desc">
+                        Chuyển khoản qua QR Code hoặc Internet Banking
+                      </div>
+                    </div>
+                    <div class="payment-check">
+                      <i data-lucide="circle"></i>
+                    </div>
+                  </div>
+                </label>
+
+                <label class="payment-method">
+                  <input type="radio" name="payment" value="momo" />
+                  <div class="payment-content">
+                    <div class="payment-icon">📱</div>
+                    <div class="payment-info">
+                      <div class="payment-name">MoMo</div>
+                      <div class="payment-desc">
+                        Thanh toán qua ví điện tử MoMo
+                      </div>
+                    </div>
+                    <div class="payment-check">
+                      <i data-lucide="circle"></i>
+                    </div>
+                  </div>
+                </label>
+
+                <label class="payment-method">
+                  <input type="radio" name="payment" value="bank_transfer" />
+                  <div class="payment-content">
+                    <div class="payment-icon">💳</div>
+                    <div class="payment-info">
+                      <div class="payment-name">Chuyển khoản ngân hàng</div>
+                      <div class="payment-desc">
+                        Chuyển khoản trực tiếp qua tài khoản ngân hàng
+                      </div>
+                    </div>
+                    <div class="payment-check">
+                      <i data-lucide="circle"></i>
+                    </div>
+                  </div>
+                </label>
+
+                <label class="payment-method payment-method-highlight">
+                  <input type="radio" name="payment" value="installment" />
+                  <div class="payment-content">
+                    <div class="payment-icon">✨</div>
+                    <div class="payment-info">
+                      <div class="payment-name">
+                        Trả góp 0%
+                        <span class="badge badge-gold">Hot</span>
+                      </div>
+                      <div class="payment-desc">
+                        Nộp hồ sơ online, duyệt nhanh trong 30 phút
+                      </div>
+                    </div>
+                    <div class="payment-check">
+                      <i data-lucide="circle"></i>
+                    </div>
+                  </div>
+                </label>
+              </div>
+
+              <div class="checkout-actions">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  id="btn-back-shipping"
+                >
+                  <i data-lucide="arrow-left"></i>
+                  Quay lại
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-large"
+                  id="btn-continue-confirm"
+                >
+                  Tiếp tục
+                  <i data-lucide="arrow-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 3: Confirmation -->
+            <div class="checkout-step" data-step="3" style="display: none">
+              <h2 class="step-title">Xác Nhận Đơn Hàng</h2>
+
+              <div class="confirmation-section">
+                <h3>Thông tin giao hàng</h3>
+                <div class="info-card" id="shipping-summary">
+                  <!-- Will be populated by JS -->
+                </div>
+              </div>
+
+              <div class="confirmation-section">
+                <h3>Phương thức thanh toán</h3>
+                <div class="info-card" id="payment-summary">
+                  <!-- Will be populated by JS -->
+                </div>
+              </div>
+
+              <div class="confirmation-section">
+                <h3>Sản phẩm</h3>
+                <div class="confirmation-products" id="confirmation-products">
+                  <!-- Will be populated by JS -->
+                </div>
+              </div>
+
+              <div class="checkout-actions">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  id="btn-back-payment"
+                >
+                  <i data-lucide="arrow-left"></i>
+                  Quay lại
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-large"
+                  id="btn-place-order"
+                >
+                  <i data-lucide="check"></i>
+                  Đặt hàng
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Order Summary (Sticky) -->
+          <div class="checkout-sidebar">
+            <div class="order-summary">
+              <h3>Tóm tắt đơn hàng</h3>
+
+              <div class="summary-products" id="summary-products">
+                <!-- Will be populated by JS -->
+              </div>
+
+              <div class="summary-divider"></div>
+
+              <div class="summary-line">
+                <span>Tạm tính</span>
+                <span id="subtotal">0đ</span>
+              </div>
+
+              <div class="summary-line">
+                <span>Phí vận chuyển</span>
+                <span id="shipping-fee">Miễn phí</span>
+              </div>
+
+              <div class="summary-voucher" id="voucher-section">
+                <div class="voucher-input-wrapper">
+                  <input
+                    type="text"
+                    id="voucher-code"
+                    placeholder="Nhập mã giảm giá"
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-sm"
+                    id="btn-apply-voucher"
+                  >
+                    Áp dụng
+                  </button>
+                </div>
+                <div
+                  class="voucher-applied"
+                  id="voucher-applied"
+                  style="display: none"
+                >
+                  <div class="voucher-info">
+                    <i data-lucide="ticket"></i>
+                    <span id="applied-voucher-code"></span>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn-remove"
+                    id="btn-remove-voucher"
+                  >
+                    <i data-lucide="x"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div
+                class="summary-line discount-line"
+                id="discount-line"
+                style="display: none"
+              >
+                <span>Giảm giá</span>
+                <span id="discount" class="text-success">-0đ</span>
+              </div>
+
+              <div class="summary-divider"></div>
+
+              <div class="summary-total">
+                <span>Tổng cộng</span>
+                <span id="total" class="total-price">0đ</span>
+              </div>
+
+              <div class="summary-note">
+                <i data-lucide="info"></i>
+                <span>Giá đã bao gồm VAT</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay" style="display: none">
+      <div class="loading-spinner"></div>
+      <p>Đang xử lý...</p>
+    </div>
+
+    <script type="module" src="./js/pages/home-return.js"></script>
+    <script type="module" src="./js/pages/checkout.js"></script>
+    <script>
+      // Initialize Lucide icons
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

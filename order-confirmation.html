@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đặt Hàng Thành Công - iLuxury</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+      (function () {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("standalone")) {
+          return;
+        }
+        let auth = null;
+        try {
+          const raw = localStorage.getItem("iluxury_auth");
+          auth = raw ? JSON.parse(raw) : null;
+        } catch (error) {
+          auth = null;
+        }
+        const target = new URL("./index.html", window.location.href);
+        target.searchParams.set(
+          "page",
+          auth?.isAuthenticated ? "order-confirmation" : "login",
+        );
+        const orderId = params.get("id");
+        if (orderId && auth?.isAuthenticated) {
+          target.searchParams.set("id", orderId);
+        }
+        if (window.location.pathname !== target.pathname) {
+          window.location.replace(
+            `${target.pathname}${target.search}${window.location.hash}`,
+          );
+        }
+      })();
+    </script>
+    <style>
+      .confirmation-page {
+        min-height: 100vh;
+        padding-top: calc(var(--header-offset) + var(--space-12));
+        padding-bottom: var(--space-16);
+      }
+
+      .confirmation-container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .confirmation-card {
+        padding: var(--space-12);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-xl);
+        background: var(--card-bg);
+        text-align: center;
+      }
+
+      .confirmation-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto var(--space-6);
+        border-radius: 50%;
+        background: rgba(48, 209, 88, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .confirmation-icon i {
+        width: 48px;
+        height: 48px;
+        color: #30d158;
+      }
+
+      .confirmation-title {
+        font-size: clamp(1.8rem, 4vw, 2.5rem);
+        font-weight: 700;
+        margin-bottom: var(--space-4);
+      }
+
+      .confirmation-order-id {
+        font-size: 18px;
+        color: var(--luxury-gold);
+        font-weight: 600;
+        margin-bottom: var(--space-6);
+      }
+
+      .confirmation-message {
+        color: var(--text-secondary);
+        margin-bottom: var(--space-8);
+        max-width: 48ch;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .confirmation-details {
+        margin-top: var(--space-12);
+        text-align: left;
+      }
+
+      .confirmation-details h3 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: var(--space-5);
+      }
+
+      .detail-section {
+        margin-bottom: var(--space-8);
+        padding: var(--space-5);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        background: var(--surface-02);
+      }
+
+      .detail-section h4 {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        margin-bottom: var(--space-3);
+      }
+
+      .detail-section p {
+        color: var(--text-primary);
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: var(--space-2);
+      }
+
+      .detail-section p:last-child {
+        margin-bottom: 0;
+      }
+
+      .order-summary-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: var(--space-4);
+      }
+
+      .order-summary-table th,
+      .order-summary-table td {
+        padding: var(--space-3);
+        text-align: left;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .order-summary-table th {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-secondary);
+      }
+
+      .order-summary-table td {
+        font-size: 14px;
+        color: var(--text-primary);
+      }
+
+      .order-summary-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .order-total-row {
+        font-weight: 700;
+        font-size: 16px !important;
+      }
+
+      .order-total-row .price {
+        color: var(--luxury-gold);
+        font-size: 20px;
+      }
+
+      .confirmation-actions {
+        display: flex;
+        gap: var(--space-4);
+        margin-top: var(--space-8);
+        justify-content: center;
+      }
+
+      @media (max-width: 768px) {
+        .confirmation-card {
+          padding: var(--space-8);
+        }
+
+        .confirmation-actions {
+          flex-direction: column;
+        }
+
+        .confirmation-actions .btn {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Simple Header -->
+    <header class="checkout-header">
+      <div class="container">
+        <div class="checkout-header-content">
+          <a href="./index.html" class="checkout-logo" data-home-return>
+            <i data-lucide="sparkles"></i>
+            <span>iLuxury</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="confirmation-page">
+      <div class="container confirmation-container">
+        <div class="confirmation-card">
+          <div class="confirmation-icon">
+            <i data-lucide="check-circle"></i>
+          </div>
+
+          <h1 class="confirmation-title">Đặt Hàng Thành Công!</h1>
+
+          <p class="confirmation-order-id" id="order-id">
+            Mã đơn: #ILUX-2026-00342
+          </p>
+
+          <p class="confirmation-message">
+            Cảm ơn bạn đã tin tưởng iLuxury. Chúng tôi sẽ liên hệ xác nhận đơn
+            hàng trong vòng 30 phút.
+          </p>
+
+          <div class="confirmation-details">
+            <h3>Chi Tiết Đơn Hàng</h3>
+
+            <div class="detail-section">
+              <h4>Thông tin giao hàng</h4>
+              <div id="shipping-details">
+                <!-- Populated by JavaScript -->
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <h4>Phương thức thanh toán</h4>
+              <div id="payment-details">
+                <!-- Populated by JavaScript -->
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <h4>Sản phẩm</h4>
+              <table class="order-summary-table">
+                <thead>
+                  <tr>
+                    <th>Sản phẩm</th>
+                    <th style="text-align: center">Số lượng</th>
+                    <th style="text-align: right">Thành tiền</th>
+                  </tr>
+                </thead>
+                <tbody id="order-items">
+                  <!-- Populated by JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="confirmation-actions">
+            <a href="./index.html" class="btn btn-secondary" data-home-return>
+              <i data-lucide="home"></i>
+              Về Trang Chủ
+            </a>
+            <a href="./index.html?page=order-history" class="btn btn-primary">
+              <i data-lucide="package"></i>
+              Xem Đơn Hàng
+            </a>
+            <a
+              href="./index.html?page=order-detail"
+              class="btn btn-secondary"
+              id="btn-order-detail"
+            >
+              <i data-lucide="file-text"></i>
+              Chi Tiết Đơn
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script type="module" src="./js/pages/home-return.js"></script>
+    <script type="module" src="./js/pages/order-confirmation.js"></script>
+  </body>
+</html>

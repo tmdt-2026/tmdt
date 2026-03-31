@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng Nhập - iLuxury</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+      (function () {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("standalone")) {
+          return;
+        }
+        const target = new URL("./index.html", window.location.href);
+        target.searchParams.set("page", "login");
+        if (window.location.pathname !== target.pathname) {
+          window.location.replace(
+            `${target.pathname}${target.search}${window.location.hash}`,
+          );
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <header class="checkout-header">
+      <div class="container">
+        <div class="checkout-header-content">
+          <a href="./index.html" class="checkout-logo" data-home-return>
+            <i data-lucide="sparkles"></i>
+            <span>iLuxury</span>
+          </a>
+          <div class="checkout-secure">
+            <i data-lucide="log-in"></i>
+            <span>Đăng nhập tài khoản</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="order-page">
+      <div class="container container-narrow">
+        <section class="order-page-head">
+          <h1>Đăng nhập</h1>
+          <p>Đăng nhập để theo dõi đơn hàng và quản lý tài khoản của bạn.</p>
+        </section>
+
+        <section class="order-detail-card account-form-card auth-form-card">
+          <form class="account-form" id="login-form">
+            <div class="form-group">
+              <label for="login-email">Email</label>
+              <input
+                id="login-email"
+                type="email"
+                placeholder="email@iluxury.vn"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="login-password">Mật khẩu</label>
+              <input
+                id="login-password"
+                type="password"
+                minlength="6"
+                required
+              />
+            </div>
+            <div class="checkout-actions">
+              <a href="./index.html?page=register" class="btn btn-secondary"
+                >Tạo tài khoản mới</a
+              >
+              <button type="submit" class="btn btn-primary">Đăng nhập</button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+
+    <script type="module" src="./js/pages/home-return.js"></script>
+    <script type="module" src="./js/pages/login.js"></script>
+  </body>
+</html>

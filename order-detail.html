@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chi Tiết Đơn Hàng - iLuxury</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+      (function () {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("standalone")) {
+          return;
+        }
+        let auth = null;
+        try {
+          const raw = localStorage.getItem("iluxury_auth");
+          auth = raw ? JSON.parse(raw) : null;
+        } catch (error) {
+          auth = null;
+        }
+        const target = new URL("./index.html", window.location.href);
+        target.searchParams.set(
+          "page",
+          auth?.isAuthenticated ? "order-detail" : "login",
+        );
+        const orderId = params.get("id");
+        if (orderId && auth?.isAuthenticated) {
+          target.searchParams.set("id", orderId);
+        }
+        if (window.location.pathname !== target.pathname) {
+          window.location.replace(
+            `${target.pathname}${target.search}${window.location.hash}`,
+          );
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <header class="checkout-header">
+      <div class="container">
+        <div class="checkout-header-content">
+          <a href="./index.html" class="checkout-logo" data-home-return>
+            <i data-lucide="sparkles"></i>
+            <span>iLuxury</span>
+          </a>
+          <div class="checkout-secure">
+            <i data-lucide="receipt-text"></i>
+            <span>Chi tiết đơn hàng</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="order-page">
+      <div class="container container-narrow">
+        <section class="order-page-head">
+          <a
+            href="./index.html?page=order-history"
+            class="btn btn-secondary btn-sm order-back-link"
+          >
+            <i data-lucide="arrow-left"></i>
+            Quay lại lịch sử đơn hàng
+          </a>
+          <h1 id="detail-order-title">Chi tiết đơn hàng</h1>
+          <p id="detail-order-subtitle">
+            Theo dõi trạng thái và thông tin giao hàng.
+          </p>
+        </section>
+
+        <section class="order-detail-status" id="order-detail-status"></section>
+
+        <section class="order-detail-grid">
+          <article class="order-detail-card">
+            <h3>Thông tin giao hàng</h3>
+            <div id="detail-shipping"></div>
+          </article>
+
+          <article class="order-detail-card">
+            <h3>Thanh toán</h3>
+            <div id="detail-payment"></div>
+          </article>
+        </section>
+
+        <section class="order-detail-card">
+          <h3>Sản phẩm trong đơn</h3>
+          <div id="detail-items"></div>
+        </section>
+
+        <section class="order-detail-card">
+          <h3>Tổng kết thanh toán</h3>
+          <div id="detail-totals"></div>
+        </section>
+      </div>
+    </main>
+
+    <script type="module" src="./js/pages/home-return.js"></script>
+    <script type="module" src="./js/pages/order-detail.js"></script>
+  </body>
+</html>
