@@ -1,289 +1,243 @@
-let categories = [
-  { id: 1, name: "Điện thoại", slug: "dien-thoai", parent_id: null, sort_order: 1, is_active: true },
-  { id: 2, name: "Phụ kiện", slug: "phu-kien", parent_id: null, sort_order: 2, is_active: true },
-  { id: 3, name: "Ốp lưng", slug: "op-lung", parent_id: 2, sort_order: 3, is_active: true },
-  { id: 4, name: "Sạc nhanh", slug: "sac-nhanh", parent_id: 2, sort_order: 4, is_active: false }
-];
+/**
+ * Quản lý danh mục thiết bị - Microservice Port 3004
+ * Đã tối ưu: Tự động load dữ liệu khi Tab hiển thị
+ */
 
-let editingCategoryId = null;
+const CategoryModule = {
+  API_URL: "http://localhost:3004/api/v1/products/categories",
+  categories: [],
+  editingCategoryId: null,
 
-function getCategoryNameById(id) {
-  const category = categories.find(c => c.id === id);
-  return category ? category.name : "Không có";
-}
+  // 1. Lấy dữ liệu từ Server
+  async fetchCategories() {
+    try {
+      const response = await fetch(this.API_URL);
+      if (!response.ok) throw new Error("Server disconnected");
+      const result = await response.json();
 
-function getParentBadge(parentId) {
-  if (!parentId) {
-    return `<span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">Danh mục gốc</span>`;
-  }
-  return `<span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">${getCategoryNameById(parentId)}</span>`;
-}
+      // Xử lý bọc data từ NestJS ResponseInterceptor
+      this.categories = Array.isArray(result) ? result : result.data || [];
 
-function getStatusBadge(isActive) {
-  return isActive
-    ? `<span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">Active</span>`
-    : `<span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-rose-100 text-rose-700">Inactive</span>`;
-}
+      this.updateStats();
+      return this.categories;
+    } catch (error) {
+      console.error("❌ API Error:", error);
+      return [];
+    }
+  },
 
-function getCategoryIcon(parentId) {
-  return parentId ? "tag" : "folder-tree";
-}
+  // 2. Cập nhật các con số thống kê trên UI
+  updateStats() {
+    const total = document.getElementById("categoryTotalCount");
+    const active = document.getElementById("categoryActiveCount");
+    const child = document.getElementById("categoryChildCount");
 
-function renderCategoryParentOptions() {
-  const select = document.getElementById("categoryParent");
-  if (!select) return;
+    if (total) total.innerText = this.categories.length;
+    if (active)
+      active.innerText = this.categories.filter(
+        (c) => c.isActive !== false,
+      ).length;
+    if (child)
+      child.innerText = this.categories.filter((c) => c.parentId).length;
+  },
 
-  const currentId = editingCategoryId;
+  // 3. Render danh sách
+  async renderCategoriesList() {
+    const grid = document.getElementById("categoryGrid");
+    if (!grid) return;
 
-  select.innerHTML =
-    `<option value="">Không có danh mục cha</option>` +
-    categories
-      .filter(category => category.id !== currentId)
-      .map(category => `<option value="${category.id}">${category.name}</option>`)
-      .join("");
-}
-
-function getFilteredCategories() {
-  const search = document.getElementById("categorySearch")?.value?.trim().toLowerCase() || "";
-  const filter = document.getElementById("categoryFilter")?.value || "all";
-
-  return categories.filter(category => {
-    const matchSearch =
-      category.name.toLowerCase().includes(search) ||
-      category.slug.toLowerCase().includes(search);
-
-    let matchFilter = true;
-
-    if (filter === "active") matchFilter = category.is_active;
-    if (filter === "inactive") matchFilter = !category.is_active;
-    if (filter === "root") matchFilter = category.parent_id === null;
-    if (filter === "child") matchFilter = category.parent_id !== null;
-
-    return matchSearch && matchFilter;
-  });
-}
-
-function renderCategoriesList() {
-  const grid = document.getElementById("categoryGrid");
-  if (!grid) return;
-
-  const filteredCategories = getFilteredCategories();
-
-  if (filteredCategories.length === 0) {
+    // Trạng thái Skeleton/Loading khi vừa nhấn vào Tab
     grid.innerHTML = `
-      <div class="md:col-span-2 xl:col-span-3 border border-dashed border-slate-300 rounded-3xl bg-slate-50 p-10 text-center">
-        <div class="flex flex-col items-center gap-3 text-slate-400">
-          <i data-lucide="folder-search-2" class="w-10 h-10"></i>
-          <p class="text-base font-medium">Không tìm thấy danh mục phù hợp</p>
-        </div>
-      </div>
-    `;
+            <div class="col-span-full flex flex-col items-center justify-center py-20 bg-slate-50/50 rounded-[2rem] border-2 border-dashed border-slate-200">
+                <div class="animate-spin rounded-full h-10 w-10 border-4 border-blue-600 border-t-transparent mb-4"></div>
+                <p class="text-slate-400 font-black uppercase tracking-widest text-[10px]">Đang đồng bộ dữ liệu...</p>
+            </div>`;
+
+    await this.fetchCategories();
+    const filtered = this.getFilteredCategories();
+
+    if (filtered.length === 0) {
+      grid.innerHTML = `<div class="col-span-full py-20 text-center text-slate-400 font-bold italic">Không có dữ liệu danh mục.</div>`;
+      return;
+    }
+
+    grid.innerHTML = filtered
+      .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
+      .map(
+        (category) => `
+                <div class="group bg-white border border-slate-200 rounded-3xl p-5 shadow-sm hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-start justify-between">
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                                <i data-lucide="${category.parentId ? "tag" : "folder-tree"}" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-800 tracking-tight">${category.name}</h3>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase">ID: ${category.id}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                        <p class="text-[9px] uppercase font-black text-slate-400 mb-1 tracking-widest">Danh mục cha</p>
+                        <span class="text-xs font-bold ${category.parentId ? "text-blue-600" : "text-slate-500"} italic">
+                            ${this.getCategoryNameById(category.parentId)}
+                        </span>
+                    </div>
+                    <div class="mt-5 flex gap-2">
+                        <button onclick="CategoryModule.editCategory('${category.id}')" class="flex-1 py-2.5 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all hover:bg-blue-600">Sửa</button>
+                        <button onclick="CategoryModule.deleteCategory('${category.id}')" class="px-3 py-2.5 bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white rounded-xl transition-all">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            `,
+      )
+      .join("");
+
+    this.renderCategoryParentOptions();
     if (window.lucide) lucide.createIcons();
-    return;
-  }
+  },
+  async deleteCategory(id) {
+    // Hiển thị hộp thoại xác nhận trước khi xóa
+    if (
+      !confirm(
+        `⚠️ Bạn có chắc chắn muốn xóa danh mục này (ID: ${id})?\nLưu ý: Không thể xóa nếu danh mục đang chứa sản phẩm.`,
+      )
+    ) {
+      return;
+    }
 
-  grid.innerHTML = filteredCategories
-  .sort((a, b) => a.sort_order - b.sort_order)
-  .map(category => `
-    <div class="group bg-white border border-slate-200 rounded-3xl p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-200">
-      <div class="flex items-start justify-between gap-3">
-        <div class="flex items-start gap-4">
-          <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-            <i data-lucide="${getCategoryIcon(category.parent_id)}" class="w-5 h-5"></i>
-          </div>
+    try {
+      // Gọi API DELETE tới Microservice
+      const response = await fetch(`${this.API_URL}/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-          <div>
-            <h3 class="text-xl font-semibold text-slate-800 leading-tight">${category.name}</h3>
-            <p class="text-sm text-slate-400 mt-1">Slug: ${category.slug}</p>
-          </div>
-        </div>
+      const result = await response.json();
 
-        <div class="text-xs font-medium text-slate-400 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-200">
-          #${category.id}
-        </div>
-      </div>
+      if (!response.ok) {
+        // Nếu server trả về lỗi (ví dụ lỗi khóa ngoại do còn sản phẩm)
+        throw new Error(result.message || "Không thể xóa danh mục này.");
+      }
 
-      <div class="mt-5 space-y-4">
-        <div class="rounded-2xl bg-slate-50 border border-slate-100 p-4">
-          <p class="text-xs uppercase tracking-wide text-slate-400 mb-2">Danh mục cha</p>
-          ${getParentBadge(category.parent_id)}
-        </div>
+      // Thông báo thành công và làm mới danh sách
+      console.log(`✅ Đã xóa danh mục ${id}`);
+      await this.renderCategoriesList();
+    } catch (error) {
+      console.error("❌ Delete Error:", error);
+      alert("Lỗi: " + error.message);
+    }
+  },
+  // 4. API Thêm/Sửa
+  async saveCategory() {
+    const name = document.getElementById("categoryName").value.trim();
+    const parentId = document.getElementById("categoryParent").value || null;
+    const sortOrder = Number(
+      document.getElementById("categorySort").value || 0,
+    );
 
-        <div class="grid grid-cols-2 gap-3">
-          <div class="rounded-2xl bg-slate-50 border border-slate-100 p-4">
-            <p class="text-xs uppercase tracking-wide text-slate-400 mb-2">Sort order</p>
-            <p class="text-xl font-semibold text-slate-800">${category.sort_order}</p>
-          </div>
+    if (!name) return alert("Vui lòng nhập tên danh mục!");
 
-          <div class="rounded-2xl bg-slate-50 border border-slate-100 p-4">
-            <p class="text-xs uppercase tracking-wide text-slate-400 mb-2">Trạng thái</p>
-            ${getStatusBadge(category.is_active)}
-          </div>
-        </div>
-      </div>
+    const payload = {
+      name: name,
+      parentId: parentId,
+      sortOrder: sortOrder,
+      slug: this.generateSlug(name),
+    };
 
-      <div class="mt-6 flex flex-wrap gap-2">
-        <button
-          onclick="editCategory(${category.id})"
-          class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition-all"
-        >
-          Edit
-        </button>
+    const method = this.editingCategoryId ? "PATCH" : "POST";
+    const url = this.editingCategoryId
+      ? `${this.API_URL}/${this.editingCategoryId}`
+      : this.API_URL;
 
-        <button
-          onclick="toggleCategoryStatus(${category.id})"
-          class="px-4 py-2.5 rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-900 font-medium transition-all"
-        >
-          ${category.is_active ? "Hide" : "Show"}
-        </button>
+    try {
+      const res = await fetch(url, {
+        method: method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        this.closeCategoryForm();
+        await this.renderCategoriesList();
+      }
+    } catch (e) {
+      alert("Lỗi kết nối server!");
+    }
+  },
 
-        <button
-          onclick="deleteCategory(${category.id})"
-          class="px-4 py-2.5 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white font-medium transition-all"
-        >
-          Delete
-        </button>
-      </div>
-    </div>
-  `)
-  .join("");
+  // --- HELPERS ---
+  getCategoryNameById(id) {
+    if (!id) return "Danh mục gốc";
+    const cat = this.categories.find((c) => String(c.id) === String(id));
+    return cat ? cat.name : "N/A";
+  },
 
-  renderCategoryParentOptions();
-  if (window.lucide) lucide.createIcons();
-}
+  getFilteredCategories() {
+    const search =
+      document.getElementById("categorySearch")?.value?.toLowerCase() || "";
+    return this.categories.filter((c) => c.name.toLowerCase().includes(search));
+  },
 
-function attachCategoryEvents() {
-  const searchInput = document.getElementById("categorySearch");
-  const filterSelect = document.getElementById("categoryFilter");
+  renderCategoryParentOptions() {
+    const select = document.getElementById("categoryParent");
+    if (!select) return;
+    select.innerHTML =
+      `<option value="">Không có danh mục cha</option>` +
+      this.categories
+        .filter((c) => String(c.id) !== String(this.editingCategoryId))
+        .map((c) => `<option value="${c.id}">${c.name}</option>`)
+        .join("");
+  },
 
-  if (searchInput && !searchInput.dataset.bound) {
-    searchInput.addEventListener("input", renderCategoriesList);
-    searchInput.dataset.bound = "true";
-  }
+  editCategory(id) {
+    const cat = this.categories.find((c) => String(c.id) === String(id));
+    if (!cat) return;
+    this.editingCategoryId = id;
+    document.getElementById("categoryFormTitle").textContent = "Sửa danh mục";
+    document.getElementById("categoryName").value = cat.name;
+    document.getElementById("categoryParent").value = cat.parentId || "";
+    document.getElementById("categorySort").value = cat.sortOrder || 0;
+    document.getElementById("categoryFormBox").classList.remove("hidden");
+  },
 
-  if (filterSelect && !filterSelect.dataset.bound) {
-    filterSelect.addEventListener("change", renderCategoriesList);
-    filterSelect.dataset.bound = "true";
-  }
-}
+  openCategoryForm() {
+    this.editingCategoryId = null;
+    document.getElementById("categoryFormTitle").textContent =
+      "Thêm danh mục mới";
+    document.getElementById("categoryName").value = "";
+    document.getElementById("categoryParent").value = "";
+    document.getElementById("categorySort").value = 0;
+    document.getElementById("categoryFormBox").classList.remove("hidden");
+  },
 
-function openCategoryForm() {
-  editingCategoryId = null;
+  closeCategoryForm() {
+    document.getElementById("categoryFormBox").classList.add("hidden");
+  },
 
-  document.getElementById("categoryFormTitle").textContent = "Add Category";
-  document.getElementById("categoryName").value = "";
-  document.getElementById("categorySlug").value = "";
-  document.getElementById("categoryParent").value = "";
-  document.getElementById("categorySort").value = "";
-  document.getElementById("categoryActive").value = "true";
-
-  renderCategoryParentOptions();
-  document.getElementById("categoryFormBox").classList.remove("hidden");
-}
-
-function closeCategoryForm() {
-  const formBox = document.getElementById("categoryFormBox");
-  if (formBox) formBox.classList.add("hidden");
-}
-
-function generateSlug(text) {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/đ/g, "d")
-    .replace(/[^a-z0-9\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-");
-}
-
-function saveCategory() {
-  const name = document.getElementById("categoryName").value.trim();
-  let slug = document.getElementById("categorySlug").value.trim();
-  const parentIdValue = document.getElementById("categoryParent").value;
-  const sortOrder = Number(document.getElementById("categorySort").value || 0);
-  const isActive = document.getElementById("categoryActive").value === "true";
-
-  if (!name) {
-    alert("Vui lòng nhập tên danh mục");
-    return;
-  }
-
-  if (!slug) slug = generateSlug(name);
-
-  const parentId = parentIdValue ? Number(parentIdValue) : null;
-
-  if (editingCategoryId !== null) {
-    const category = categories.find(c => c.id === editingCategoryId);
-    if (!category) return;
-
-    category.name = name;
-    category.slug = slug;
-    category.parent_id = parentId;
-    category.sort_order = sortOrder;
-    category.is_active = isActive;
-  } else {
-    categories.push({
-      id: categories.length ? Math.max(...categories.map(c => c.id)) + 1 : 1,
-      name,
-      slug,
-      parent_id: parentId,
-      sort_order: sortOrder,
-      is_active: isActive
-    });
-  }
-
-  closeCategoryForm();
-  renderCategoriesList();
-}
-
-function editCategory(id) {
-  const category = categories.find(c => c.id === id);
-  if (!category) return;
-
-  editingCategoryId = id;
-
-  document.getElementById("categoryFormTitle").textContent = "Edit Category";
-  document.getElementById("categoryName").value = category.name;
-  document.getElementById("categorySlug").value = category.slug;
-
-  renderCategoryParentOptions();
-
-  document.getElementById("categoryParent").value = category.parent_id ?? "";
-  document.getElementById("categorySort").value = category.sort_order;
-  document.getElementById("categoryActive").value = String(category.is_active);
-
-  document.getElementById("categoryFormBox").classList.remove("hidden");
-}
-
-function toggleCategoryStatus(id) {
-  const category = categories.find(c => c.id === id);
-  if (!category) return;
-
-  category.is_active = !category.is_active;
-  renderCategoriesList();
-}
-
-function deleteCategory(id) {
-  const hasChildren = categories.some(c => c.parent_id === id);
-
-  if (hasChildren) {
-    alert("Danh mục này đang có danh mục con. Hãy xoá hoặc chuyển danh mục con trước.");
-    return;
-  }
-
-  categories = categories.filter(c => c.id !== id);
-  renderCategoriesList();
-}
-
-window.renderCategories = function () {
-  attachCategoryEvents();
-  renderCategoriesList();
+  generateSlug(text) {
+    return text
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/đ/g, "d")
+      .replace(/[^a-z0-9\s-]/g, "")
+      .trim()
+      .replace(/\s+/g, "-");
+  },
 };
 
-window.openCategoryForm = openCategoryForm;
-window.closeCategoryForm = closeCategoryForm;
-window.saveCategory = saveCategory;
-window.editCategory = editCategory;
-window.toggleCategoryStatus = toggleCategoryStatus;
-window.deleteCategory = deleteCategory;
+// --- LOGIC TỰ ĐỘNG LOAD KHI CLICK ---
+window.initCategoryTab = () => CategoryModule.renderCategoriesList();
+
+// Theo dõi nếu tab này được hiển thị (dùng MutationObserver)
+document.addEventListener("DOMContentLoaded", () => {
+  const grid = document.getElementById("categoryGrid");
+  if (grid) {
+    CategoryModule.renderCategoriesList();
+  }
+});
+
+window.CategoryModule = CategoryModule;

@@ -1,132 +1,65 @@
-<div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6">
-  <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4 mb-8">
-    <div>
-      <h2 class="text-3xl font-bold text-slate-800 tracking-tight">Category Management</h2>
-      <p class="text-sm text-slate-500 mt-2">
-        Quản lý danh mục, danh mục con, thứ tự hiển thị và trạng thái hoạt động.
-      </p>
+<div class="bg-white rounded-[2.5rem] shadow-sm border border-slate-200 p-8 animate-in fade-in duration-700">
+    <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6 mb-10">
+        <div>
+            <h2 class="text-3xl font-black text-slate-800 tracking-tighter italic">CATEGORY <span class="text-blue-600">DATABASE</span></h2>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Quản lý cấu trúc danh mục sản phẩm (Port 3004)</p>
+        </div>
+        <div class="flex gap-3">
+            <button onclick="CategoryModule.renderCategoriesList()" class="w-12 h-12 flex items-center justify-center bg-slate-50 border border-slate-200 rounded-2xl text-slate-400 hover:bg-white hover:text-blue-600 transition-all">
+                <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+            </button>
+            <button onclick="CategoryModule.openCategoryForm()" class="bg-blue-600 text-white px-8 py-3.5 rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-xl shadow-blue-100 hover:bg-blue-700 active:scale-95 transition-all">
+                Add New Category
+            </button>
+        </div>
     </div>
 
-    <button
-      onclick="openCategoryForm()"
-      class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-2xl font-medium shadow-sm transition-all"
-    >
-      <i data-lucide="plus" class="w-4 h-4"></i>
-      <span>Add Category</span>
-    </button>
-  </div>
-
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-    <div class="lg:col-span-2 relative">
-      <i data-lucide="search" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-      <input
-        id="categorySearch"
-        type="text"
-        placeholder="Tìm theo tên hoặc slug..."
-        class="w-full border border-slate-300 rounded-2xl pl-11 pr-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
-      >
-    </div>
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-  <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-    <p class="text-sm text-slate-500">Tổng danh mục</p>
-    <p id="categoryTotalCount" class="text-2xl font-bold text-slate-800 mt-1">0</p>
-  </div>
-
-  <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-    <p class="text-sm text-slate-500">Đang bật</p>
-    <p id="categoryActiveCount" class="text-2xl font-bold text-emerald-600 mt-1">0</p>
-  </div>
-
-  <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-    <p class="text-sm text-slate-500">Danh mục con</p>
-    <p id="categoryChildCount" class="text-2xl font-bold text-blue-600 mt-1">0</p>
-  </div>
-</div>
-
-    <select
-      id="categoryFilter"
-      class="w-full border border-slate-300 rounded-2xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
-    >
-      <option value="all">Tất cả trạng thái</option>
-      <option value="active">Đang bật</option>
-      <option value="inactive">Đang tắt</option>
-      <option value="root">Danh mục gốc</option>
-      <option value="child">Danh mục con</option>
-    </select>
-  </div>
-
-  <div id="categoryGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
-
-  <div id="categoryFormBox" class="hidden mt-8 border border-slate-200 rounded-3xl p-6 bg-slate-50">
-    <h3 class="text-xl font-semibold text-slate-800 mb-5" id="categoryFormTitle">Add Category</h3>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-2">Tên danh mục</label>
-        <input
-          id="categoryName"
-          type="text"
-          placeholder="Ví dụ: Điện thoại"
-          class="w-full border border-slate-300 rounded-2xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
-        >
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-2">Slug</label>
-        <input
-          id="categorySlug"
-          type="text"
-          placeholder="dien-thoai"
-          class="w-full border border-slate-300 rounded-2xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
-        >
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-2">Danh mục cha</label>
-        <select
-          id="categoryParent"
-          class="w-full border border-slate-300 rounded-2xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="">Không có danh mục cha</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-2">Sort order</label>
-        <input
-          id="categorySort"
-          type="number"
-          placeholder="1"
-          class="w-full border border-slate-300 rounded-2xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
-        >
-      </div>
-
-      <div class="md:col-span-2">
-        <label class="block text-sm font-medium text-slate-700 mb-2">Trạng thái</label>
-        <select
-          id="categoryActive"
-          class="w-full md:w-72 border border-slate-300 rounded-2xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="true">Đang bật</option>
-          <option value="false">Đang tắt</option>
-        </select>
-      </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100">
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tổng số</p>
+            <p id="categoryTotalCount" class="text-3xl font-black text-slate-800 mt-1">0</p>
+        </div>
+        <div class="bg-emerald-50/50 p-6 rounded-3xl border border-emerald-100 border-l-4 border-l-emerald-500">
+            <p class="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Active</p>
+            <p id="categoryActiveCount" class="text-3xl font-black text-emerald-600 mt-1">0</p>
+        </div>
+        <div class="bg-blue-50/50 p-6 rounded-3xl border border-blue-100 border-l-4 border-l-blue-500">
+            <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest">Danh mục con</p>
+            <p id="categoryChildCount" class="text-3xl font-black text-blue-600 mt-1">0</p>
+        </div>
     </div>
 
-    <div class="flex gap-3 mt-6">
-      <button
-        onclick="saveCategory()"
-        class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-2xl font-medium"
-      >
-        Save
-      </button>
-
-      <button
-        onclick="closeCategoryForm()"
-        class="bg-white border border-slate-300 text-slate-700 px-5 py-3 rounded-2xl font-medium"
-      >
-        Cancel
-      </button>
+    <div class="relative mb-8">
+        <i data-lucide="search" class="w-5 h-5 absolute left-5 top-1/2 -translate-y-1/2 text-slate-300"></i>
+        <input id="categorySearch" type="text" placeholder="Tìm nhanh danh mục..." class="w-full bg-slate-50 border-none rounded-2xl py-4 pl-14 pr-6 text-sm font-bold focus:ring-2 focus:ring-blue-500 transition-all shadow-inner">
     </div>
-  </div>
+
+    <div id="categoryGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 min-h-[300px]">
+        </div>
+
+    <div id="categoryFormBox" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white rounded-[3rem] p-10 max-w-xl w-full shadow-2xl animate-in zoom-in-95">
+            <h3 id="categoryFormTitle" class="text-2xl font-black text-slate-800 mb-8 italic uppercase tracking-tighter">Category Form</h3>
+            <div class="space-y-5">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase mb-2 block">Tên danh mục *</label>
+                        <input id="categoryName" type="text" class="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm font-bold focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black text-slate-400 uppercase mb-2 block">Thứ tự (Sort)</label>
+                        <input id="categorySort" type="number" class="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm font-bold">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black text-slate-400 uppercase mb-2 block">Danh mục cha</label>
+                        <select id="categoryParent" class="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm font-bold"></select>
+                    </div>
+                </div>
+                <div class="flex gap-3 pt-6">
+                    <button onclick="CategoryModule.saveCategory()" class="flex-1 bg-slate-900 text-white py-4 rounded-2xl font-black uppercase text-[11px] tracking-widest hover:bg-blue-600 transition-all shadow-xl">Save Database</button>
+                    <button onclick="CategoryModule.closeCategoryForm()" class="px-8 py-4 bg-slate-100 text-slate-400 rounded-2xl font-black uppercase text-[11px] hover:bg-slate-200 transition-all">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

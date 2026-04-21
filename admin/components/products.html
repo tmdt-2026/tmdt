@@ -1,79 +1,92 @@
 <div class="space-y-6 animate-in slide-in-from-right duration-500">
-    <div class="flex justify-between items-center">
+  <div class="flex justify-between items-center">
+    <div>
+      <h2 class="text-2xl font-bold text-slate-800">Kho hàng thiết bị</h2>
+      <p class="text-sm text-slate-500">Quản lý kho máy tính, điện thoại và linh kiện (Cổng 3004)</p>
+    </div>
+    <div class="flex gap-2">
+      <button onclick="InventoryModule.loadProducts()" class="p-2.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition shadow-sm text-slate-600">
+        <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+      </button>
+      <button onclick="Utils.toggleModal('add-product-modal')" class="bg-blue-600 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 hover:bg-blue-700 transition shadow-lg shadow-blue-100 font-bold active:scale-95">
+        <i data-lucide="plus-circle" class="w-5 h-5"></i> Thêm thiết bị mới
+      </button>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="bg-slate-50 text-slate-500 text-[10px] uppercase font-black tracking-widest border-b border-slate-200">
+          <th class="px-6 py-5">Sản phẩm & Hình ảnh</th>
+          <th class="px-6 py-5">Danh mục</th>
+          <th class="px-6 py-5">Giá niêm yết</th>
+          <th class="px-6 py-5">Tồn kho</th>
+          <th class="px-6 py-5 text-right">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody id="product-table-body" class="divide-y divide-slate-100"></tbody>
+    </table>
+    <div id="product-loading" class="hidden py-20 text-center">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-600 border-t-transparent mb-4"></div>
+      <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Đang kết nối API Microservice...</p>
+    </div>
+  </div>
+
+  <div id="add-product-modal" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center z-50 p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-[2.5rem] max-w-xl w-full p-8 shadow-2xl animate-in zoom-in-95 duration-300 max-h-[95vh] overflow-y-auto custom-scroll">
+      <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-5">
         <div>
-            <h2 class="text-2xl font-bold text-slate-800">Kho hàng thiết bị</h2>
-            <p class="text-sm text-slate-500">Quản lý kho máy tính, điện thoại và linh kiện</p>
+          <h3 class="text-xl font-bold text-slate-800">Nhập thiết bị mới</h3>
+          <p class="text-[10px] text-slate-400 uppercase font-bold tracking-tighter">Database: product_db | Port: 3004</p>
         </div>
-        <button onclick="Utils.toggleModal('add-product-modal')" class="bg-blue-600 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 hover:bg-blue-700 transition shadow-lg shadow-blue-100 font-bold active:scale-95">
-            <i data-lucide="plus-circle" class="w-5 h-5"></i> Thêm thiết bị mới
+        <button onclick="Utils.toggleModal('add-product-modal')" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
         </button>
-    </div>
+      </div>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-        <table class="w-full text-left border-collapse">
-            <thead>
-                <tr class="bg-slate-50 text-slate-500 text-xs uppercase font-bold tracking-widest border-b border-slate-200">
-                    <th class="px-6 py-5">Tên thiết bị</th>
-                    <th class="px-6 py-5">Phân loại</th>
-                    <th class="px-6 py-5">Giá bán</th>
-                    <th class="px-6 py-5">Số lượng</th>
-                    <th class="px-6 py-5 text-right">Hành động</th>
-                </tr>
-            </thead>
-            <tbody id="product-table-body" class="divide-y divide-slate-100"></tbody>
-        </table>
-        
-        <div id="product-loading" class="hidden py-12 text-center">
-            <div class="ai-loading mb-2"></div>
-            <p class="text-xs text-slate-400">Đang truy xuất kho hàng...</p>
-        </div>
-    </div>
-
-    <div id="add-product-modal" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center z-50 p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-3xl max-w-xl w-full p-8 shadow-2xl animate-in zoom-in-95 duration-300">
-            <div class="flex justify-between items-center mb-6 border-b pb-4">
-                <h3 class="text-xl font-bold">Nhập thiết bị mới</h3>
-                <button onclick="Utils.toggleModal('add-product-modal')" class="text-slate-400"><i data-lucide="x"></i></button>
+      <form id="add-product-form" class="space-y-5">
+        <div class="group relative flex flex-col items-center justify-center p-6 border-2 border-dashed border-slate-200 rounded-3xl bg-slate-50/50 hover:bg-slate-50 hover:border-blue-300 transition-all cursor-pointer" onclick="document.getElementById('p-image-input').click()">
+          <input type="file" id="p-image-input" hidden accept="image/*" onchange="InventoryModule.previewImage(event)" />
+          <input type="hidden" id="p-image-url" value="" />
+          <div id="image-preview-placeholder" class="text-center">
+            <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm mx-auto mb-3">
+              <i data-lucide="image-plus" class="w-6 h-6 text-blue-500"></i>
             </div>
-
-            <form id="add-product-form" class="space-y-4">
-                <div class="flex flex-col items-center justify-center p-4 border-2 border-dashed rounded-2xl bg-slate-50 cursor-pointer" onclick="document.getElementById('p-image-input').click()">
-                    <input type="file" id="p-image-input" hidden accept="image/*" onchange="InventoryModule.previewImage(event)">
-                    <div id="image-preview-placeholder" class="text-center">
-                        <i data-lucide="image-plus" class="w-8 h-8 text-slate-300 mx-auto"></i>
-                        <p class="text-[10px] text-slate-400">Tải ảnh thiết bị</p>
-                    </div>
-                    <img id="image-preview-display" class="hidden w-full h-32 object-cover rounded-xl">
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="col-span-2">
-                        <label class="text-[10px] font-bold uppercase text-slate-400">Tên sản phẩm</label>
-                        <input type="text" id="p-name" required class="w-full border p-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-bold uppercase text-slate-400">Danh mục</label>
-                        <select id="p-category" class="w-full border p-3 rounded-xl text-sm bg-white">
-                            <option>Laptop & PC</option>
-                            <option>Điện thoại</option>
-                            <option>Linh kiện</option>
-                            <option>Âm thanh</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-bold uppercase text-slate-400">Số lượng</label>
-                        <input type="number" id="p-stock" required class="w-full border p-3 rounded-xl text-sm">
-                    </div>
-                    <div class="col-span-2">
-                        <label class="text-[10px] font-bold uppercase text-slate-400">Giá bán (VNĐ)</label>
-                        <input type="number" id="p-price" required class="w-full border p-3 rounded-xl text-sm">
-                    </div>
-                </div>
-
-                <button type="submit" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-blue-600 transition shadow-lg active:scale-95">
-                    Xác nhận nhập kho
-                </button>
-            </form>
+            <p class="text-xs font-bold text-slate-500">Tải ảnh thiết bị</p>
+          </div>
+          <img id="image-preview-display" class="hidden w-full h-44 object-cover rounded-2xl shadow-md" />
         </div>
+
+        <div class="grid grid-cols-2 gap-5">
+          <div class="col-span-2">
+            <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-1">Tên sản phẩm chính *</label>
+            <input type="text" id="p-name" required placeholder="Ví dụ: MacBook Pro M3..." class="w-full bg-slate-50 border-none p-4 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-blue-500 font-semibold transition-all" />
+          </div>
+          <div class="col-span-1">
+            <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-1">Danh mục sản phẩm *</label>
+            <select id="p-category" required class="w-full bg-slate-50 border-none p-4 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-blue-500 font-semibold transition-all appearance-none">
+              <option value="" disabled selected>Đang tải danh mục...</option>
+            </select>
+          </div>
+          <div class="col-span-1">
+            <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-1">ID Model (Nếu có)</label>
+            <input type="text" id="p-model" placeholder="Nhập ID Model" class="w-full bg-slate-50 border-none p-4 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
+          </div>
+          <div class="col-span-1">
+            <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-1">Giá bán niêm yết</label>
+            <input type="number" id="p-price" required placeholder="0" class="w-full bg-slate-50 border-none p-4 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-blue-500 font-bold text-blue-600" />
+          </div>
+          <div class="col-span-1">
+            <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-1">Số lượng nhập kho</label>
+            <input type="number" id="p-stock" required placeholder="0" class="w-full bg-slate-50 border-none p-4 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-blue-500 font-semibold" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-4 bg-slate-900 text-white rounded-[1.5rem] font-bold hover:bg-blue-600 transition-all shadow-xl shadow-slate-200 active:scale-95 flex items-center justify-center gap-2">
+          <i data-lucide="check-circle" class="w-5 h-5"></i> Xác nhận nhập kho thiết bị
+        </button>
+      </form>
     </div>
+  </div>
 </div>

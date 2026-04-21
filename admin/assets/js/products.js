@@ -1,248 +1,217 @@
 /**
  * assets/js/products.js
- * Quản lý logic Kho hàng: Hiển thị, Thêm mới, Preview ảnh
  */
 
 const InventoryModule = {
-    // 1. Cấu hình Endpoint
-    API_URL: "https://your-database-api.com/products",
+  // 1. Cấu hình Endpoint
+  API_URL: "http://localhost:3004/api/v1/products",
+  CATEGORY_API_URL: "http://localhost:3004/api/v1/products/categories",
 
-    // 2. Dữ liệu mẫu (Đã cập nhật 5 sản phẩm)
-    async fetchProductsFromDB() {
-        try {
-            return [
-                {
-                    id: 1,
-                    name: "MacBook Pro M3 Max 14-inch",
-                    category: "Laptop & PC",
-                    price: "79.990.000",
-                    stock: 5
-                },
-                {
-                    id: 2,
-                    name: "iPhone 15 Pro Max 256GB - Titanium",
-                    category: "Điện thoại",
-                    price: "29.450.000",
-                    stock: 12
-                },
-                {
-                    id: 3,
-                    name: "Bàn phím cơ Custom Keychron Q1 Pro",
-                    category: "Linh kiện",
-                    price: "4.200.000",
-                    stock: 2
-                },
-                {
-                    id: 4,
-                    name: "Tai nghe Sony WH-1000XM5",
-                    category: "Âm thanh",
-                    price: "6.990.000",
-                    stock: 25
-                },
-                {
-                    id: 5,
-                    name: "Card màn hình ASUS ROG Strix RTX 4090",
-                    category: "Linh kiện",
-                    price: "56.500.000",
-                    stock: 3
-                }
-            ];
-        } catch (error) {
-            console.error("Lỗi tải kho hàng:", error);
-            return [];
-        }
-    },
+  // --- GIỮ NGUYÊN PHẦN DANH MỤC CỦA BẠN ---
+  async fetchCategoriesToSelect() {
+    let selectEl = document.getElementById("p-category");
+    let retryCount = 0;
+    while (!selectEl && retryCount < 5) {
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      selectEl = document.getElementById("p-category");
+      retryCount++;
+    }
 
-    // 3. Render dữ liệu ra bảng giao diện
-    async loadProducts() {
-        const tbody = document.getElementById('product-table-body');
-        const loader = document.getElementById('product-loading');
-        
-        if (!tbody) return;
+    if (!selectEl) {
+      console.error("❌ Không thể tìm thấy thẻ <select id='p-category'> sau 5 lần thử.");
+      return;
+    }
 
-        tbody.innerHTML = "";
-        loader?.classList.remove('hidden');
+    try {
+      const response = await fetch(this.CATEGORY_API_URL);
+      const result = await response.json();
+      const categories = Array.isArray(result) ? result : result.data || [];
 
-        const products = await this.fetchProductsFromDB();
-        loader?.classList.add('hidden');
+      let html = '<option value="" disabled selected>-- Chọn danh mục --</option>';
+      categories.forEach((cat) => {
+        html += `<option value="${cat.id}">${cat.name}</option>`;
+      });
 
-        products.forEach(product => {
-            // Logic đổi màu số lượng: dưới 5 đơn vị sẽ hiện màu đỏ cảnh báo
-            const stockColor = product.stock <= 5 ? 'bg-rose-100 text-rose-600' : 'bg-emerald-100 text-emerald-600';
-            
-            tbody.innerHTML += `
-                <tr class="text-sm hover:bg-slate-50 transition-colors">
-                    <td class="px-6 py-4 font-bold text-slate-800">${product.name}</td>
-                    <td class="px-6 py-4 text-slate-500 text-xs">${product.category}</td>
-                    <td class="px-6 py-4 font-bold text-blue-600">${product.price}đ</td>
+      selectEl.innerHTML = html;
+      console.log("✅ Đã nạp danh mục vào Select Box.");
+    } catch (error) {
+      console.error("❌ Lỗi API Danh mục:", error);
+    }
+  },
+
+  // 3. Lấy dữ liệu sản phẩm từ Database
+  async fetchProductsFromDB() {
+    try {
+      const response = await fetch(this.API_URL);
+      if (!response.ok) throw new Error("Không thể kết nối đến server");
+      const result = await response.json();
+      return Array.isArray(result) ? result : result.data || [];
+    } catch (error) {
+      console.error("❌ Lỗi tải kho hàng:", error);
+      return [];
+    }
+  },
+
+  // 4. Render bảng sản phẩm
+  async loadProducts() {
+    const tbody = document.getElementById("product-table-body");
+    const loader = document.getElementById("product-loading");
+    if (!tbody) return;
+
+    tbody.innerHTML = "";
+    loader?.classList.remove("hidden");
+
+    const products = await this.fetchProductsFromDB();
+    loader?.classList.add("hidden");
+
+    if (products.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-slate-400 italic font-medium">Kho hàng trống.</td></tr>`;
+      return;
+    }
+
+    products.forEach((product) => {
+      const variant = product.variants && product.variants[0] ? product.variants[0] : {};
+      const price = variant.price ? Number(variant.price).toLocaleString() : "0";
+      const stock = variant.stockQuantity || 0;
+      const stockColor = stock <= 5 ? "bg-rose-100 text-rose-600" : "bg-emerald-100 text-emerald-600";
+
+      tbody.innerHTML += `
+                <tr class="text-sm hover:bg-slate-50 transition-colors border-b border-slate-100">
                     <td class="px-6 py-4">
-                        <span class="px-3 py-1 rounded-full text-[10px] font-bold ${stockColor}">
-                            ${product.stock} đơn vị
+                        <div class="flex items-center gap-3">
+                            <img src="${product.imgUrl || "https://via.placeholder.com/40"}" class="w-10 h-10 rounded-xl object-cover border border-slate-100 shadow-sm">
+                            <div>
+                                <div class="font-bold text-slate-800">${product.name}</div>
+                                <div class="text-[9px] text-slate-400 font-mono">ID: ${product.id}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 py-1 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-bold">
+                            ${product.category?.name || "N/A"}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 font-black text-indigo-600">${price} ₫</td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 rounded-full text-[10px] font-black ${stockColor}">
+                            ${stock} đơn vị
                         </span>
                     </td>
                     <td class="px-6 py-4 text-right">
-                        <div class="flex justify-end gap-2">
-                            <button class="p-2 text-slate-400 hover:text-blue-600 transition" title="Sửa">
-                                <i data-lucide="edit-3" class="w-4 h-4"></i>
-                            </button>
-                            <button onclick="InventoryModule.deleteProduct(${product.id})" class="p-2 text-slate-400 hover:text-rose-600 transition" title="Xóa">
-                                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                            </button>
-                        </div>
+                        <button onclick="InventoryModule.deleteProduct('${product.id}')" class="w-8 h-8 flex items-center justify-center rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all ml-auto">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
                     </td>
                 </tr>
             `;
-        });
-        
-        if (window.lucide) lucide.createIcons();
-    },
+    });
+    if (window.lucide) lucide.createIcons();
+  },
 
-    // 4. Xử lý Xem trước ảnh
-    previewImage(event) {
-        const file = event.target.files[0];
-        const display = document.getElementById('image-preview-display');
-        const placeholder = document.getElementById('image-preview-placeholder');
+  previewImage(event) {
+    const file = event.target.files[0];
+    const display = document.getElementById("image-preview-display");
+    const placeholder = document.getElementById("image-preview-placeholder");
+    const urlInput = document.getElementById("p-image-url");
 
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                display.src = e.target.result;
-                display.classList.remove('hidden');
-                placeholder.classList.add('hidden');
-            };
-            reader.readAsDataURL(file);
-        }
-    },
-
-    // 5. Thêm sản phẩm mới
-    async handleAddProduct(e) {
-        e.preventDefault();
-        
-        const submitBtn = e.target.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-
-        const formData = {
-            name: document.getElementById('p-name').value,
-            category: document.getElementById('p-category').value,
-            price: document.getElementById('p-price').value,
-            stock: document.getElementById('p-stock').value,
-            image: document.getElementById('image-preview-display').src
-        };
-
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = `<span class="ai-loading"></span> Đang lưu...`;
-
-        try {
-            await new Promise(resolve => setTimeout(resolve, 800));
-            alert("Thành công: " + formData.name + " đã được nhập kho!");
-            
-            e.target.reset();
-            document.getElementById('image-preview-display').classList.add('hidden');
-            document.getElementById('image-preview-placeholder').classList.remove('hidden');
-            Utils.toggleModal('add-product-modal');
-            
-            InventoryModule.loadProducts();
-        } catch (err) {
-            alert("Lỗi: Không thể lưu sản phẩm.");
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalText;
-        }
-    },
-
-    // 6. Xử lý Xóa
-    deleteProduct(id) {
-        if(confirm("Bạn có chắc chắn muốn xóa thiết bị này khỏi kho?")) {
-            // Ở đây bạn có thể thêm logic gọi API DELETE
-            this.loadProducts(); 
-        }
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        display.src = e.target.result;
+        urlInput.value = e.target.result; 
+        display.classList.remove("hidden");
+        placeholder.classList.add("hidden");
+      };
+      reader.readAsDataURL(file);
     }
+  },
+
+  async handleAddProduct(e) {
+    e.preventDefault();
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+
+    const name = document.getElementById("p-name").value.trim();
+    const categoryId = document.getElementById("p-category").value;
+    const modelId = document.getElementById("p-model").value.trim();
+    const price = parseFloat(document.getElementById("p-price").value) || 0;
+    const stock = parseInt(document.getElementById("p-stock").value) || 0;
+    const imgUrl = document.getElementById("p-image-url").value;
+
+    if (!name || !categoryId) {
+      alert("Vui lòng nhập tên và chọn danh mục!");
+      return;
+    }
+
+    const payload = {
+      name: name,
+      categoryId: String(categoryId),
+      modelId: modelId ? String(modelId) : undefined,
+      imgUrl: imgUrl || "https://via.placeholder.com/150",
+      variants: [{
+        color: "Tiêu chuẩn",
+        ram: 0,
+        storage: 0,
+        importPrice: Math.round(price * 0.8),
+        price: price,
+        stockQuantity: stock,
+        isActive: true,
+        originalPrice: price
+      }]
+    };
+
+    console.log("📤 Gửi Payload:", payload);
+
+    try {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = "Đang xử lý...";
+
+      const response = await fetch(this.API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        const errorDetail = Array.isArray(result.message) ? result.message.join(", ") : result.message;
+        throw new Error(errorDetail || "Lỗi server");
+      }
+
+      console.log("✅ Thành công:", result);
+      alert("✅ Nhập kho thành công!");
+      e.target.reset();
+      Utils.toggleModal("add-product-modal");
+      this.loadProducts();
+    } catch (error) {
+      console.error("❌ Thất bại:", error.message);
+      alert("Lỗi: " + error.message);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+    }
+  },
+
+  async deleteProduct(id) {
+    if (!confirm("Xóa thiết bị này?")) return;
+    try {
+      const response = await fetch(`${this.API_URL}/${id}`, { method: "DELETE" });
+      if (response.ok) this.loadProducts();
+    } catch (error) { console.error(error); }
+  }
 };
 
-/**
- * KHỞI TẠO
- */
-document.addEventListener('DOMContentLoaded', () => {
-    InventoryModule.loadProducts();
-    const addProductForm = document.getElementById('add-product-form');
-    if (addProductForm) {
-        addProductForm.addEventListener('submit', InventoryModule.handleAddProduct);
-    }
+// --- FIX LỖI DOM: Lắng nghe sự kiện toàn cục ---
+document.addEventListener("submit", (e) => {
+  if (e.target && e.target.id === "add-product-form") {
+    InventoryModule.handleAddProduct(e);
+  }
 });
 
-// 1. Giả lập dữ liệu so sánh cho các mốc thời gian
-const comparisonData = {
-    week: {
-        revenue: { val: "+3.2%", positive: true },
-        orders: { val: "+1.5%", positive: true },
-        customers: { val: "+5", positive: true },
-        warranty: { val: "-0.2%", positive: true },
-        label: "so với tuần trước"
-    },
-    month: {
-        revenue: { val: "+12.5%", positive: true },
-        orders: { val: "+5%", positive: true },
-        customers: { val: "+18", positive: true },
-        warranty: { val: "-2.1%", positive: true },
-        label: "so với tháng trước"
-    },
-    quarter: {
-        revenue: { val: "+28.4%", positive: true },
-        orders: { val: "+15.2%", positive: true },
-        customers: { val: "+142", positive: true },
-        warranty: { val: "+0.5%", positive: false },
-        label: "so với quý trước"
-    },
-    year: {
-        revenue: { val: "+112%", positive: true },
-        orders: { val: "+85%", positive: true },
-        customers: { val: "+1,240", positive: true },
-        warranty: { val: "-5.4%", positive: true },
-        label: "so với năm trước"
-    }
-};
-
-// 2. Hàm xử lý khi thay đổi Dropdown
-function handleTimeRangeChange() {
-    const range = document.getElementById('time-range-selector').value;
-    const data = comparisonData[range];
-
-    // Cập nhật Card Doanh thu
-    updateCard('revenue', data.revenue, data.label);
-    // Cập nhật Card Đơn hàng
-    updateCard('orders', data.orders, data.label);
-    // Cập nhật Card Khách hàng
-    updateCard('customers', data.customers, data.label);
-    // Cập nhật Card Bảo hành
-    updateCard('cancel-rate', data.warranty, data.label);
-
-    // Vẽ lại biểu đồ nếu cần để khớp với mốc thời gian
-    updateChartsForRange(range);
-}
-
-// 3. Helper cập nhật UI từng Card
-function updateCard(key, stat, label) {
-    const valEl = document.getElementById(`compare-${key}-val`);
-    const labelEl = document.getElementById(`compare-${key}-label`);
-    
-    if (valEl && labelEl) {
-        valEl.innerText = stat.val;
-        labelEl.innerText = label;
-
-        // Đổi màu sắc (Xanh nếu tốt, Đỏ nếu xấu)
-        if (stat.positive) {
-            valEl.className = "text-xs font-bold text-emerald-500 bg-emerald-50 px-2 py-1 rounded";
-        } else {
-            valEl.className = "text-xs font-bold text-rose-500 bg-rose-50 px-2 py-1 rounded";
-        }
-    }
-}
-
-// 4. (Tùy chọn) Cập nhật dữ liệu biểu đồ
-function updateChartsForRange(range) {
-    // Logic cập nhật labels của Chart.js (Ví dụ: T2, T3 -> Q1, Q2)
-    console.log("Đang cập nhật biểu đồ theo mốc:", range);
-    // Gọi hàm initCharts() của bạn với dữ liệu mới tại đây
-}
+document.addEventListener("DOMContentLoaded", () => {
+  InventoryModule.loadProducts();
+  InventoryModule.fetchCategoriesToSelect();
+});
 
 window.InventoryModule = InventoryModule;
